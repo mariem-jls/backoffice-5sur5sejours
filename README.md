@@ -32,6 +32,7 @@ Ce projet a été développé dans le cadre du Projet de Fin d'Études (PFE) en 
 └── config/
 
 
+
 ## 🚀 Lancer le projet en local
 
 ```bash
@@ -41,6 +42,7 @@ composer install
 php bin/console doctrine:database:create
 php bin/console doctrine:migrations:migrate
 symfony server:start
+
 
 👩‍💻 Auteurs
 
