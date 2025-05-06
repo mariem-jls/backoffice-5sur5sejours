@@ -1,0 +1,113 @@
+{% extends "Admin/LayoutAdmin.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/typemail.css'}}" >
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+{% endblock %}
+{% block Content %}
+    <div class="row no-margin HeaderSearch">
+        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-2 whtiespace"></div>
+        <div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-10 SerchContent" style="margin-top: 70px;">
+            <div class="row no-margin divSearch1">
+                <input class="SearchSejour" id="SearchSejour" placeholder="Recherche" onkeyup="myFunction();"/>
+            </div>
+        </div>
+    </div>
+    <div class="row no-margin Space ">
+        <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2  no-margin"> </div>
+        <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-8      no-margin">
+            <table id="example" class=" table display responsive " width="100%">
+                <thead>
+                    <tr>
+                        <th class="nomtitre">Type de Email </th>
+                        <th class="prenomtitre">Destinataire </th>
+                        <th class="prenomtitre">Date de creation </th>
+                        <th class="prenomtitre">Actions </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for mail in mail %}
+                        <tr>
+                            <td class="nom">{{ mail.typeemail.libiller }} </td>
+                            {% if  mail.idDestinataire is not null %} <td class="nom">{{ mail.idDestinataire.nom }} {{ mail.idDestinataire.prenom }} </td>{% else %}<td></td>{% endif %}
+                            <td class="nom">{{ mail.dateCreation|date("d/m/Y") }}</td>
+                            <td class="nom">
+                                    <button class="btn btn-success btn{{ mail.typeemail.id}}"   {% if mail.statut.id == 10 %} style="display: block"{% else %} style="display: none"{% endif %} onclick="activerMail($(this),{{ mail.id }},{{ mail.typeemail.id }} )"> Activer</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td  colspan ="4" class="no-padding">
+                                    <span data-toggle="collapse" data-target="#demo{{ mail.id }}"><i class="fa fa-angle-up iconeFleche" onclick="rotateIcone($(this));"></i></span>
+                                    <div id="demo{{ mail.id }}" class="collapse">
+                                        {# contenu  sou tableau #}
+                                        {# contenu  1ére tableau #}
+                                        <table id="parentinfo" class="table-sm" width="100%">
+                                            <thead>
+                                                <tr>
+                                                    <th class="titreimg"><u> Image 1 </u> </th>
+                                                    <th  ></th>
+                                                    <th class="titreimg"><u> Image 2 </u></th>
+                                                    <th >   </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td class="nomtitre"><img  id="img1{{mail.id}}"style="max-width:250px;max-height:160px;min-width:250px;min-height:160px;"src="{{ mail.idImage1.path }}">
+                                                        <div class="inputpadding"> <button onclick="cloudDinaryChangerImageMail1({{ mail.id }})" class="btn" style="margin-top:20px;border-color:#F09E7A;border-radius: 100%"> <i style="color:#F09E7A; font-size:18px;"class="fa fa-pencil"></i></button></div></td>
+                                                    <td class="prenomtitre"></td>
+                                                    <td class="nomtitre"><img  id="img2{{mail.id}}"style="max-width:250px;max-height:160px;min-width:250px;min-height:160px;" src="{{ mail.idImage2.path }}">
+                                                        <br>
+                                                        <div class="inputpadding"> <button onclick="cloudDinaryChangerImageMail2({{ mail.id }} )" class="btn" style="margin-top:20px;border-color:#F09E7A;border-radius: 100%"> <i style="font-size:18px;color:#F09E7A;text-align: center "class="fa fa-pencil"></i></button></div></td>
+                                                    <td class="prenomtitre"></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        {#  Fin du contenu   #}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor%}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2  no-margin"> </div>
+                </div>
+                {% endblock %}
+                    {% block javascripts %}
+                        {{ parent() }}
+                        <script src="{{'/js/EspaceParent.js'}}"></script>
+                        <script>
+                                                                    function rotateIcone(elem) {
+                                                                        if (elem.hasClass('active')) {
+                                                                            elem.removeClass('active');
+                                                                        } else {
+                                                                            elem.addClass('active');
+                                                                        }
+                                                                    }
+                        </script>
+                        <script> var uploadImage1 = '{{ path('imageemail') }}'</script>
+                        <script> var uploadImage2 = '{{ path('imageemail2') }}'</script>
+                        <script> var AcitveMail = '{{ path('AcitveMail') }}'</script>
+                        <script src="{{'/js/GestionEmailing.js'}}"></script>
+                        <script>
+                            function activerMail(element, $id, $type)
+                            {
+                                $data = {'id': $id, 'typeMail': $type};
+                                $.ajax({
+                                    type: "POST",
+                                    url: AcitveMail,
+                                    data: $data,
+                                    success: function () {
+                                        Swal.fire({
+                                            type: 'success',
+                                            title: 'Email mis en avant!',
+                                        })
+                                                $(".btn"+$type).each(function(){
+                                                   $(this).css('display','block')
+                                                });
+                                                element.css('display','none')
+                                    }
+                                });
+                            }
+                        </script>
+                    {% endblock %}

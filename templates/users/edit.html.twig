@@ -1,0 +1,90 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Datatables
+{% endblock %}
+
+{% block css %}
+	<!-- third party css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link
+	href="/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+<!-- third party css end -->
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Editeurs' }) }}
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body col-md-6">
+					<h4 class="mt-0 header-title">Liste Editeurs</h4>
+					{{ form_start(form) }}
+					<div class="form-group">
+						{{ form_label(form.nom) }}
+						{{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.nom) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.prenom) }}
+						{{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.prenom) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.email) }}
+						{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.email) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.password) }}
+						{{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.password) }}
+					</div>
+                    <div class="form-group">
+						{{ form_label(form.nummobile) }}
+						{{ form_widget(form.nummobile, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.nummobile) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.roles) }}
+						{{ form_widget(form.roles, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.roles) }}
+					</div>
+					<button class="btn btn-success">{{ button_label|default('Save') }}</button>
+					{{ form_end(form) }}
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- end row -->
+
+
+{% endblock %}
+
+{% block javascript %}<!-- third party js -->
+	 <script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+	 <script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	 <script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	 <script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+	 <script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	 <script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	 <script src="/libs/pdfmake/build/pdfmake.min.js"></script>
+	 <script src="/libs/pdfmake/build/vfs_fonts.js"></script>
+	<!-- third party js ends -->
+
+	<!-- Datatables init -->
+	 <script src="/js/pages/datatables.init.js"></script>
+
+{% endblock %}

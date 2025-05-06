@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Promotion{% endblock %}
+
+{% block body %}
+    <h1>Promotion</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ promotion.id }}</td>
+            </tr>
+            <tr>
+                <th>Code</th>
+                <td>{{ promotion.code }}</td>
+            </tr>
+            <tr>
+                <th>Date Creation</th>
+                <td>{{ promotion.dateCreation ? promotion.dateCreation|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Date Debut</th>
+                <td>{{ promotion.dateDebut ? promotion.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Date Fin</th>
+                <td>{{ promotion.dateFin ? promotion.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Max General</th>
+                <td>{{ promotion.nbreMaxGeneral }}</td>
+            </tr>
+            <tr>
+                <th>Max Per User</th>
+                <td>{{ promotion.nbreMaxParUser }}</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>{{ promotion.type }}</td>
+            </tr>
+            <tr>
+                <th>Etat</th>
+                <td>{{ promotion.etat ? 'Yes' : 'No' }}</td>
+            </tr>
+            <tr>
+                <th>Statut</th>
+                <td>{{ promotion.statut.name }}</td>
+            </tr>
+            <tr>
+                <th>Pourcentage</th>
+                <td>{{ promotion.pourcentage }}</td>
+            </tr>
+            <tr>
+                <th>Strategie</th>
+                <td>{{ promotion.strategie }}</td>
+            </tr>
+            <tr>
+                <th>Applicable</th>
+                <td>{{ promotion.nbreApplicable }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('promotions_index') }}" class="btn btn-secondary">Back to list</a>
+    <a href="{{ path('promotions_edit', {'id': promotion.id}) }}" class="btn btn-primary">Edit</a>
+    {{ include('promotions/_delete_form.html.twig', {'promotion': promotion}) }}
+{% endblock %}

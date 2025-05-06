@@ -1,0 +1,389 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Chart.js Charts
+{% endblock %}
+
+{% block stylesheets %}
+	<style>
+		.ca-chart {
+			position: relative;
+			width: 100%;
+			height: 300px !important;
+		}
+	</style>
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Chart.js Charts' }) }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+	{% if type == "Chiffre_D_Affaires" %}
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Chiffres d'affaire connexion</h4>
+
+					<div class="ca-chart">
+						<canvas id="cac"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Chiffres d'affaire Produits</h4>
+
+					<div class="ca-chart">
+						<canvas id="cap"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Chiffres d'affaire réversement</h4>
+
+					<div class="ca-chart">
+						<canvas id="carev"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	{% if type == "Commandes" %}
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Chiffres d'affaire connexion</h4>
+
+					<div class="ca-chart">
+						<canvas id="cmd"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Chiffres d'affaire Produits</h4>
+
+					<div class="ca-chart">
+						<canvas id="cmdlast"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	{% if type == "Comptes_Parents" %}
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Chiffres d'affaire connexion</h4>
+
+					<div class="ca-chart">
+						<canvas id="parent"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Chiffres d'affaire Produits</h4>
+
+					<div class="ca-chart">
+						<canvas id="parentlast"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	{% if type == "Sejours" %}
+		<div class="col-xl-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="header-title mt-0 mb-3 text-center">Nombre séjours</h4>
+
+					<div class="ca-chart">
+						<canvas id="sejour"></canvas>
+					</div>
+					<div class="ca-chart">
+						<canvas id="sejourlast"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+	{% endif %}
+	</div>
+	<!-- end row -->
+
+
+{% endblock %}
+
+{% block javascript %}<!-- Chart JS -->
+	 <script src="/libs/chart.js/Chart.bundle.min.js"></script>
+
+	<!-- Init js -->
+	 <script src="/js/pages/chartjs.init.js"></script>
+	 <script>
+			document.addEventListener('DOMContentLoaded', function() {
+				const type = {{ type|json_encode|raw }};
+				console.log(type);
+				{% if type == "Chiffre_D_Affaires" %}
+					const cac = {{ CaCnx|json_encode|raw }};
+					const cap = {{ revProd|json_encode|raw }};
+					const carevCnx = {{ reverCnx|json_encode|raw }};
+					const carevProd = {{ revProd|json_encode|raw }};
+					
+		
+					const carevLabels = Object.keys(carevCnx).map(key => isNaN(Number(key)) ? key : Number(key));
+					
+					const carevCnxValues = Object.values(carevCnx);
+					const carevProdValues = Object.values(carevProd);
+					console.log(type);
+					const capValues = Object.values(cap);
+					const capLabels = Object.keys(cap).map(key => isNaN(Number(key)) ? key : Number(key));
+		
+					// Extract labels and data
+					const cacLabels = Object.keys(cac.cnxFree).map(key => isNaN(Number(key)) ? key : Number(key));
+					const cnxFreeData = Object.values(cac.cnxFree);
+					const cnxPayData = Object.values(cac.cnxPay);
+		
+		
+		
+					function createSimpleChart(ctx, title, label, data) {
+						return new Chart(ctx, {
+							type: 'line', // or 'line', 'pie', etc.
+							data: {
+								labels: label,
+								datasets: [{
+									label: title,
+									data: data,
+									backgroundColor: 'rgba(75, 192, 192, 0.2)',
+									borderWidth: 1
+								}]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: true
+									}
+								}
+							}
+						});
+					}
+					
+					function createAdvancedChart(ctx, title, labels, data1, data2) {
+						return new Chart(ctx, {
+							type: 'line', // or 'line', 'pie', etc.
+							data: {
+								labels: labels,
+								datasets: [
+									{
+										label: 'Connexion Free',
+										data: data1,
+										backgroundColor: 'rgba(75, 192, 192, 0.2)',
+										borderColor: 'rgba(75, 192, 192, 1)',
+										borderWidth: 1
+									},
+									{
+										label: 'Connexion Pay',
+										data: data2,
+										backgroundColor: 'rgba(153, 102, 255, 0.2)',
+										borderColor: 'rgba(153, 102, 255, 1)',
+										borderWidth: 1
+									}
+								]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: true
+									}
+								}
+							}
+						});
+					}
+		
+					const cacContext = document.getElementById('cac').getContext('2d');
+					const capContext = document.getElementById('cap').getContext('2d');
+					const carevContext = document.getElementById('carev').getContext('2d');
+		
+					// Create the chart with both datasets
+					const cacChart = createAdvancedChart(cacContext, "Chiffres d'affaire connexion", cacLabels, cnxFreeData, cnxPayData);
+					const capChart = createSimpleChart(capContext, "Chiffres d'affaire Produits", capLabels, capValues);
+					const carevChart = createAdvancedChart(carevContext, "Chiffres d'affaire Reversement", carevLabels, carevCnxValues, carevProdValues);
+				{% endif %}
+				{% if type == "Commandes" %}
+					const cmd = {{ ListCmd|json_encode|raw }};
+					const cmdlast = {{ ListCmdLast|json_encode|raw }};
+					
+					const cmdValues = Object.values(cmd);
+					const cmdlastValues = Object.values(cmdlast);
+					const cmdlastLabels = Object.keys(cmdlast).map(key => isNaN(Number(key)) ? key : Number(key));
+					const cmdLabels = Object.keys(cmd).map(key => isNaN(Number(key)) ? key : Number(key));
+		
+					function createSimpleChart(ctx, title, label, data) {
+						return new Chart(ctx, {
+							type: 'bar', // or 'line', 'pie', etc.
+							data: {
+								labels: label,
+								datasets: [{
+									label: title,
+									data: data,
+									backgroundColor: 'rgba(75, 192, 192, 0.2)',
+									borderWidth: 1
+								}]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: true
+									}
+								}
+							}
+						});
+					}
+		
+					const cmdContext = document.getElementById('cmd').getContext('2d');
+					const cmdlastContext = document.getElementById('cmdlast').getContext('2d');
+		
+					// Create the chart with both datasets
+					const cacChart = createSimpleChart(cmdContext, "Chiffres d'affaire connexion", cmdLabels, cmdValues);
+					const capChart = createSimpleChart(cmdlastContext, "Chiffres d'affaire Produits", cmdlastLabels, cmdlastValues);
+				{% endif %}sejour
+				{% if type == "Comptes_Parents" %}
+					const parentCnx = {{ parentCnct|json_encode|raw }};
+					const userCreate = {{ usercreate|json_encode|raw }};
+					const userActive = {{ userActive|json_encode|raw }};
+
+					const parentCnxLast = {{ parentCnctLast|json_encode|raw }};
+					const userCreateLast = {{ usercreateLast|json_encode|raw }};
+					const userActiveLast = {{ userActiveLast|json_encode|raw }};
+
+					console.log(parentCnx, userCreate, userActive);
+					console.log(parentCnxLast, userCreateLast, userActiveLast);
+					
+					const parentLabels = Object.keys(parentCnx).map(key => isNaN(Number(key)) ? key : Number(key));
+
+					const parentCnxValues = Object.values(parentCnx);
+					const userCreateValues = Object.values(userCreate);
+					const userActiveValues = Object.values(userActive);
+					const parentCnxLastValues = Object.values(parentCnxLast);
+					const userCreateLastValues = Object.values(userCreateLast);
+					const userActiveLastValues = Object.values(userActiveLast);
+		
+					function createAdvancedChart(ctx, title, labels, data1, data2, data3) {
+						return new Chart(ctx, {
+							type: 'line', // or 'line', 'pie', etc.
+							data: {
+								labels: labels,
+								datasets: [
+									{
+										label: 'Parents créés',
+										data: data1,
+										backgroundColor: 'rgba(75, 192, 192, 0.2)',
+										borderColor: 'rgba(75, 192, 192, 1)',
+										borderWidth: 1
+									},
+									{
+										label: 'Parents connéctés',
+										data: data2,
+										backgroundColor: 'rgba(153, 102, 255, 0.2)',
+										borderColor: 'rgba(153, 102, 255, 1)',
+										borderWidth: 1
+									},
+									{
+										label: 'Parents actifs',
+										data: data3,
+										backgroundColor: 'red',
+										borderColor: 'rgba(153, 102, 255, 1)',
+										borderWidth: 1
+									}
+								]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: true
+									}
+								}
+							}
+						});
+					}
+		
+					const parentContext = document.getElementById('parent').getContext('2d');
+					const parentlastContext = document.getElementById('parentlast').getContext('2d');
+		
+					// Create the chart with both datasets
+					const parentChart = createAdvancedChart(parentContext, "Chiffres d'affaire connexion", parentLabels, parentCnxValues, userCreateValues, userActiveValues);
+					const parentlastChart = createAdvancedChart(parentlastContext, "Chiffres d'affaire Produits", parentLabels, parentCnxLastValues, userCreateLastValues, userActiveLastValues);
+				{% endif %}
+				{% if type == "Sejours" %}
+					const sejourCreer = {{ SejEnCour|json_encode|raw }};
+					const sejourActif = {{ SejActf|json_encode|raw }};
+
+					const sejourCreerLast = {{ SejEnCourLast|json_encode|raw }};
+					const sejourActifLast = {{ SejActfLast|json_encode|raw }};
+
+					console.log(sejourCreer);
+					console.log(sejourActif);
+					
+					const sejourLabels = Object.keys(sejourCreer).map(key => isNaN(Number(key)) ? key : Number(key));
+
+					const sejourCreerValues = Object.values(sejourCreer);
+					const sejourActifValues = Object.values(sejourActif);
+					const sejourCreerLastValues = Object.values(sejourCreerLast);
+					const sejourActifLastValues = Object.values(sejourActifLast);
+		
+					function createAdvancedChart(ctx, title, labels, data1, data2) {
+						return new Chart(ctx, {
+							type: 'line', // or 'line', 'pie', etc.
+							data: {
+								labels: labels,
+								datasets: [
+									{
+										label: 'Parents créés',
+										data: data1,
+										backgroundColor: 'rgba(75, 192, 192, 0.2)',
+										borderColor: 'rgba(75, 192, 192, 1)',
+										borderWidth: 1
+									},
+									{
+										label: 'Parents connéctés',
+										data: data2,
+										backgroundColor: 'rgba(153, 102, 255, 0.2)',
+										borderColor: 'rgba(153, 102, 255, 1)',
+										borderWidth: 1
+									}
+								]
+							},
+							options: {
+								scales: {
+									y: {
+										beginAtZero: true
+									}
+								}
+							}
+						});
+					}
+		
+					const sejourContext = document.getElementById('sejour').getContext('2d');
+					const sejourlastContext = document.getElementById('sejourlast').getContext('2d');
+		
+					// Create the chart with both datasets
+					const sejourChart = createAdvancedChart(sejourContext, "Chiffres d'affaire connexion", sejourLabels, sejourCreerValues, sejourActifValues);
+					const sejourlastChart = createAdvancedChart(sejourlastContext, "Chiffres d'affaire Produits", sejourLabels, sejourCreerLastValues, sejourActifLastValues);
+				{% endif %}
+				
+			});
+		</script>
+
+
+{% endblock %}

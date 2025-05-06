@@ -1,0 +1,9 @@
+controllers:
+    resource:
+        path: ../src/Controller/
+        namespace: App\Controller
+    type: attribute
+
+# promotions_get:
+#     path: /promotions/get
+#     controller: App\Controller\PromotionsController::getPromotions

@@ -1,0 +1,146 @@
+<!-- ========== Left Sidebar Start ========== -->
+<div class="left-side-menu">
+
+	<div
+		class="h-100" data-simplebar>
+
+		<!-- User box -->
+		<div class="user-box text-center">
+
+			<img src="/images/users/user-1.jpg" alt="user-img" title="Mat Helme" class="rounded-circle img-thumbnail avatar-md">
+			<div class="dropdown">
+				<a href="/users/profile" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block">
+					{% if current_user %}
+						{{ current_user.nom }} {{ current_user.prenom }} <i class="mdi mdi-chevron-down"></i> 
+					
+					{% endif %}
+				</a>				
+			</div>
+
+			<p class="text-muted left-user-info">
+			{% if current_user %}
+				{% if current_user.roles[0] == 'ROLE_ADMIN' %}
+					Administrateur
+				{% elseif current_user.roles[0] == 'ROLE_SUPPORT' %}
+					Support
+				{% endif %}
+			{% endif %}
+			</p>
+
+			
+		</div>
+
+		<!--- Sidemenu -->
+		<div
+			id="sidebar-menu">
+			{# {{ dump(current_user) }} #}
+			{% if current_user and current_user.hasRole('ROLE_ADMIN') %}
+				<ul id="side-menu">
+					<li class="menu-title">Navigation</li>
+					<li>
+						<a href="/">
+							<i class="mdi mdi-view-dashboard-outline"></i>
+							<span class="badge bg-success rounded-pill float-end">9+</span>
+							<span>Tableau de Board</span>
+						</a>
+					</li>
+					<li>
+						<a href="/commandes">
+							<i class="mdi mdi-forum-outline"></i>
+							<span>Commandes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/promotions">
+							<i class="mdi mdi-briefcase-variant-outline"></i>
+							<span>Promotions</span>
+						</a>
+					</li>
+					<li>
+						<a href="/factures">
+							<i class="mdi mdi-forum-outline"></i>
+							<span>Factures</span>
+						</a>
+					</li>
+					<li>
+						<a href="/produits">
+							<i class="mdi mdi-forum-outline"></i>
+							<span>Produits</span>
+						</a>
+					</li>
+					<li>
+						<a href="#sidebarAuth" data-bs-toggle="collapse">
+							<i class="mdi mdi-account-multiple-plus-outline"></i>
+							<span>Utilisateurs</span>
+							<span class="menu-arrow"></span>
+						</a>
+						<div class="collapse" id="sidebarAuth">
+							<ul class="nav-second-level">
+								<li>
+									<a href="/users/admins">Administrateurs</a>
+								</li>
+								<li>
+									<a href="/users/supports">Supports</a>
+								</li>
+								<li>
+									<a href="/users/parents">Parents</a>
+								</li>
+								<li>
+									<a href="/users/partenaires">Partenaires</a>
+								</li>
+								<li>
+									<a href="/users/accompagneteurs">Accompagneteurs</a>
+								</li>
+								<li>
+									<a href="{{ path('user_new') }}">Ajouter Utilisateur</a>
+								</li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			{% elseif current_user and current_user.hasRole('ROLE_SUPPORT') %}
+				<ul id="side-menu">
+					<li class="menu-title">Navigation</li>
+					<li>
+						<a href="/commandes">
+							<i class="mdi mdi-forum-outline"></i>
+							<span>Commandes</span>
+						</a>
+					</li>
+					<li>
+						<a href="/promotions">
+							<i class="mdi mdi-briefcase-variant-outline"></i>
+							<span>Promotions</span>
+						</a>
+					</li>
+					<li>
+						<a href="/produits">
+							<i class="mdi mdi-forum-outline"></i>
+							<span>Produits</span>
+						</a>
+					</li>
+					<li>
+						<a href="/users/parents">
+							<i class="mdi mdi-forum-outline"></i>
+							<span>Parents</span>
+						</a>
+					</li>
+					<li>
+						<a href="/users/partenaires">
+							<i class="mdi mdi-forum-outline"></i>
+							<span>Partenaires</span>
+						</a>
+					</li>
+				</ul>
+			{% endif %}
+
+
+		</div>
+		<!-- End Sidebar -->
+
+		<div class="clearfix"></div>
+
+	</div>
+	<!-- Sidebar -left -->
+</div>
+<!-- Left Sidebar End -->

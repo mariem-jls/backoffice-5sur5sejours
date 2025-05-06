@@ -1,0 +1,238 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Advanced Plugins
+{% endblock %}
+
+{% block css %}
+	<!-- Plugins css -->
+	<link href="/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css"/>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Modifier promotion' }) }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body col-md-6">
+					<h3>Modifier promotion</h3>
+					<hr>
+
+					<form action="{{ path('promotions_edit', {'id': promotion.id}) }}" method="post">
+						<div class="row">
+							<div class="col-lg-6 col-md-6">
+								<label>Code promo*</label>
+								<input type="text" name="code" autocomplete="off" id="code" value="{{ promotion.code }}" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+								<div class="invalid-feedback trn" style="display:none" id="codeMessage">Ce champs est obligatoire!*</div>
+							</div>
+
+							<div class="col-lg-6 col-md-6">
+								<label>Pourcentage % *</label>
+								<input type="number" name="pourcentage" autocomplete="off" min="0" value="{{ promotion.pourcentage }}" id="pourcentage" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+								<div class="invalid-feedback trn" style="display:none" id="pourcentageMessage">Ce champs est obligatoire!*</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6 col-md-6">
+								<label>Sous panier</label>
+								<select name="nbreApplicable" id="nbreApplicable" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+									<option value="1" {{ promotion.nbreApplicable == 1 ? 'selected' : '' }}>1</option>
+									<option value="2" {{ promotion.nbreApplicable == 2 ? 'selected' : '' }}>2</option>
+									<option value="3" {{ promotion.nbreApplicable == 3 ? 'selected' : '' }}>3</option>
+									<option value="4" {{ promotion.nbreApplicable == 4 ? 'selected' : '' }}>4</option>
+									<option value="5" {{ promotion.nbreApplicable == 5 ? 'selected' : '' }}>5</option>
+								</select>
+							</div>
+							<div class="col-lg-6 col-md-6"></div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6 col-md-6">
+								<label>Date du début*</label>
+								<input type="date" name="dateDebut" autocomplete="off" value="{{ promotion.dateDebut|date('Y-m-d') }}" id="datedebut" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12">
+								<div class="invalid-feedback trn" style="display:none" id="datedebutMessage">Ce champs est obligatoire!*</div>
+							</div>
+							<div class="col-lg-6 col-md-6">
+								<label>Date de fin*</label>
+								<input type="date" name="dateFin" autocomplete="off" value="{{ promotion.dateFin|date('Y-m-d') }}" id="datefin" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+								<div class="invalid-feedback trn" style="display:none" id="datefinMessage">Ce champs est obligatoire!*</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-lg-6 col-md-6">
+								<label>Nombre d'utilisation</label>
+								<input type="number" name="nbreMaxParUser" autocomplete="off" value="{{ promotion.nbreMaxParUser }}" id="nbrutilisation" min="0" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+							</div>
+
+							<div class="col-lg-6 col-md-6">
+								<label>Type</label>
+								<select name="type" id="type" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+									<option value="parent" {{ promotion.type == 'parent' ? 'selected' : '' }}>Parents</option>
+									<option value="accompagnateur" {{ promotion.type == 'accompagnateur' ? 'selected' : '' }}>Accompagnateurs</option>
+									<option value="parents" {{ promotion.type == 'parents' ? 'selected' : '' }}>Des parents spécifiques</option>
+									<option value="codeSejour" {{ promotion.type == 'codeSejour' ? 'selected' : '' }}>Des code séjour spécifique</option>
+								</select>
+							</div>
+						</div>
+						<div class="col-lg-10 col-md-10 col-ms-10 col-xs-10 no-padding" style="display:none">
+							<label>Parents</label>
+							<select name="tabParents[]" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding" id="parents" multiple></select>
+						</div>
+
+						<div class="col-lg-10 col-md-10 col-ms-10 col-xs-10 no-padding " style="display:none">
+							<label>Code séjour</label>
+							<select class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding" id="sejours" multiple></select>
+						</div>
+
+
+						<div class="row no-margin">
+							<div class="col-xl-8 col-lg-8 col-md-8 col-ms-8 col-xs-8 no-padding">
+								<div style="display:flex;">
+									<button type="button" onclick="modifierPromo({{ promotion.id }})" id="btnCreationAccoSejour" class="btn circle">Enregistrer</button>
+									<a type="button" style="margin-left: 20px;" href="/promotions" class="btn btn-secondary">Retour</a>
+								</div>
+							</div>
+						</div>					
+					</form>
+
+			</div>
+
+		</div>
+		<!-- end card-body -->
+	</div>
+	<!-- end card-->
+</div>
+<!-- end col --></div><!-- end row -->{% endblock %}
+{% block javascript %}
+<script src="/libs/selectize/js/standalone/selectize.min.js"></script>
+<script src="/libs/mohithg-switchery/switchery.min.js"></script>
+<script src="/libs/multiselect/js/jquery.multi-select.js"></script>
+<script src="/libs/select2/js/select2.min.js"></script>
+<script src="/libs/jquery-mockjax/jquery.mockjax.min.js"></script>
+<script src="/libs/devbridge-autocomplete/jquery.autocomplete.min.js"></script>
+<script src="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+<script src="/libs/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+<!-- Init js-->{# <script src="/js/pages/form-advanced.init.js"></script> #}
+<script>
+	function ActivateMenuBtn(elem) {
+	$('.ColMenu').each(function () {
+	$(this).removeClass('active');
+	});
+	elem.parent().addClass('active');
+	}</script>
+	<script src="/js/CreationPromo.js"></script>
+	<script>
+		$(document).ready(function(){
+			
+			$tab=[];
+			var type = document.getElementById('type').value;
+					if(type == "parents"){
+						var parents = getParentsListe();
+						//console.log("parents: "+parents);
+						//getParentsUpdate(parents);	
+
+						$('#parents').parent().css('display', 'block');
+					}else if(type == "codeSejour"){
+						getCodeSejourUpdate({{ promotion.id }});
+						$('#sejours').parent().css('display', 'block');
+					}
+
+				
+			getCodeSejourUpdate($tab);
+			
+		});
+		$('#type').on('change', function () {
+
+			if ($(this).val() == "parents") {
+					$('#loaderAcc').css('display','block');
+
+					$tab=[];
+						
+					getParentsUpdate($tab);
+			$('#sejours').parent().css('display', 'none');
+			$('#parents').parent().css('display', 'block');
+			} else if ($(this).val() == "codeSejour") {
+				$('#loaderAcc').css('display','block');
+				
+				$tab=[];
+						$tab.push(p);
+
+						$tab.push(p);
+
+					
+				getCodeSejourUpdate($tab);
+			$('#parents').parent().css('display', 'none');
+			$('#sejours').parent().css('display', 'block');
+			} else {
+			$('#sejours').parent().css('display', 'none');
+			$('#parents').parent().css('display', 'none');
+
+			}
+
+		});
+
+
+	function getParentsListe() {
+		console.log("get parents");
+		$.ajax({
+			type: "GET",
+			url: getListeParents,
+			success: function (response) {
+				var tab = response['parents'];
+				console.log(tab);
+				getParentsUpdate(tab);    
+			},
+			error: function (xhr, status, error) {
+				console.error("Error occurred: " + status + " " + error);
+				console.error(xhr.responseText);
+				alert("An error occurred while fetching the sejours. Please try again.");
+				$('#loaderAcc').css('display', 'none');
+			}
+		});
+	}
+
+	function getParentsUpdate(parents) {
+		$.ajax({
+			type: "GET",
+			url: "/promotions/getListeParents",
+			success: function (response) {
+				var tab = response['parents'];
+				if (tab) {
+					var options = "";
+					for (var i = 0; i < tab.length; i++) {
+						if (parents.includes(tab[i]['id'])) {
+							options += "<option selected value=" + tab[i]['id'] + ">" + tab[i]['nom'] + " " + tab[i]['prenom'] + "-" + tab[i]['email'] + "</option>";
+						} else {
+							options += "<option value=" + tab[i]['id'] + ">" + tab[i]['nom'] + " " + tab[i]['prenom'] + "-" + tab[i]['email'] + "</option>";
+						}
+					}
+					$('#parents').html(options);
+				}
+				$('#loaderAcc').css('display', 'none');
+			},
+			error: function (xhr, status, error) {
+				console.error("Error occurred: " + status + " " + error);
+				console.error(xhr.responseText);
+				alert("An error occurred while fetching the parents. Please try again.");
+			}
+		});
+	}
+	</script>
+	<script>
+	var ajoutPromo = "/promotions";
+
+	var listePromotions = "/ListePromos";
+
+	var getListeParents = "/promotions/getListeParents";
+
+	var getListeCodeSejours = "/promotions/getCodeSejours";
+</script>
+{% endblock %}

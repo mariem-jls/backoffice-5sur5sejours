@@ -1,0 +1,484 @@
+/************************************************/
+
+
+/* *Auteur: Wattas Amani
+   *Date de création : 22/10/2019
+   *Descrption : style general
+   ***
+   *Derniére modification: 
+        *date : 20/11/2019
+        *par  : omayma
+    *Derniére modification: 
+        *date : 27/02/2020
+        *par  : Abbessi salim
+    *Derniére modification: 
+        *date : 07/07/2021
+        *par  : Wattas Amani
+*/
+
+
+/************************************************/
+
+@media (max-width: 5000px) {
+    /**** style card recherche ******/
+    .card {
+        border: 1px solid #41a2aa;
+        width: 63%;
+        margin: auto;
+        border-radius: 0;
+    }
+    .card-header {
+        background-color: #41A2AA;
+        text-align: center;
+        font-size: 20px;
+        color: #fff;
+        font-family: montserrat-regular;
+        border-radius: 0px !important;
+    }
+    .SerchContent {
+        flex: 0 0 90%;
+        max-width: 80%;
+        padding-top: 7%;
+        margin: auto;
+    }
+    .circleRechercheBtn {
+        display: block;
+        /* padding: 0 0; */
+        width: 168px;
+        height: 35px;
+        font-family: 'Montserrat-Medium', sans-serif;
+        font-size: 14px;
+        /* font-weight: 400; */
+        border: 0;
+        border: 1px solid #fff;
+        -webkit-border-radius: 17.02px;
+        -moz-border-radius: 17.02px;
+        border-radius: 17.02px;
+        text-align: center;
+        line-height: 0px;
+        color: #fff !important;
+        /* text-transform: capitalize; */
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        transition: 1s;
+        cursor: pointer;
+        /* letter-spacing: 2px; */
+        background: #F09E7A;
+        margin-left: 88%;
+    }
+    .circleRechercheBtn:hover {
+        background-color: #41A2AA;
+    }
+    .card-body {
+        padding: 0px 100px 25px 100px;
+    }
+    .form-control {
+        display: block;
+        width: 100%;
+        height: calc(1.5em + .75rem + 3px);
+        padding: .375rem .75rem;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #41a2aa;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        margin-bottom: 8px;
+        border-radius: 0px;
+        font-family: Montserrat-regular;
+    }
+    .custom-select {
+        display: block;
+        width: 100%;
+        height: calc(1.5em + .75rem + 3px);
+        padding: .375rem .75rem;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #41a2aa;
+        transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+        margin-bottom: 8px;
+        border-radius: 0px;
+        font-family: Montserrat-regular;
+    }
+    /*********** Style Contenu page ***********/
+    .HeaderSearch {
+        position: relative;
+        height: 0;
+    }
+    .divSearch1 {
+        margin-bottom: 20px;
+        margin-top: 50px;
+    }
+    .SerchContent {
+        padding-left: 21px;
+    }
+    .SearchSejour {
+        width: 291px;
+        height: 39px;
+        border-radius: 25px;
+        border: 1px solid black;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        background-color: white;
+        font-family: Montserrat-Regular;
+        font-size: 13px;
+        color: black;
+        background: url(/images/SearchIcon.svg) no-repeat left;
+        outline: none;
+        padding-left: 44px;
+        background-position-x: 14px;
+        background-position-y: 10px;
+    }
+    .divSearch2 {
+        height: 50px;
+    }
+    /*** style border dataTable ***/
+    table.dataTable {
+        clear: both;
+        margin-top: 6px !important;
+        margin-bottom: 6px !important;
+        max-width: none !important;
+        border-collapse: separate !important;
+        border-spacing: 1px !important;
+    }
+    .table th {
+        padding: .75rem;
+        vertical-align: top;
+        border-top: 0px;
+    }
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 0px;
+    }
+    thead td,
+    .table-bordered thead th {
+        border-bottom-width: 0px;
+    }
+    .table-bordered {
+        border: 0px solid #dee2e6;
+    }
+    .table-bordered td,
+    .table-bordered th {
+        border: 0px;
+    }
+    table.table-bordered.dataTable tbody th,
+    table.table-bordered.dataTable tbody td {
+        border-bottom-width: 7px !important;
+    }
+    /**** fin ***/
+    .inputSearch {
+        width: 195px;
+        height: 44px;
+        border: none;
+        border-bottom: 1px solid black;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        background-color: white;
+        font-family: 'Montserrat-Regular';
+        font-size: 12px;
+        color: black;
+        margin-right: 30px;
+        outline: none;
+        padding-left: 13px;
+        padding-top: 12px;
+        padding-left: 13px;
+    }
+    .SearchSejour::placeholder,
+    .inputSearch::placeholder {
+        color: black;
+    }
+    .FiltreContent {
+        text-align: center;
+        margin-top: 70px;
+    }
+    table.dataTable thead .sorting,
+    table.dataTable thead .sorting_asc,
+    table.dataTable thead .sorting_desc,
+    table.dataTable thead .sorting_asc_disabled,
+    table.dataTable thead .sorting_desc_disabled {
+        cursor: pointer;
+        *cursor: hand;
+        background-repeat: no-repeat;
+        background-position: center right
+    }
+    table.dataTable thead .sorting {
+        background-image: url("../images/sort_desc_disabled.png")
+    }
+    table.dataTable thead .sorting_asc {
+        background-image: url("../images/sort_desc.png")
+    }
+    table.dataTable thead .sorting_desc {
+        background-image: url("../images/sort_desc.png")
+    }
+    table.dataTable thead .sorting_asc_disabled {
+        background-image: url("../images/sort_asc_disabled.png")
+    }
+    table.dataTable thead .sorting_desc_disabled {
+        background-image: url("../images/sort_desc_disabled.png")
+    }
+    .titleFiltreChoisi {
+        font-family: Montserrat-Bold;
+        font-size: 12px;
+        text-decoration: underline;
+        text-align: left;
+        text-transform: uppercase;
+        width: 193px;
+        float: right;
+        margin-right: 18px;
+        margin-bottom: 34px;
+        cursor: pointer;
+    }
+    .dataTables_filter {
+        text-align: end;
+        padding-right: 73px;
+    }
+    .CategSejour {
+        width: 193px;
+        height: 51px;
+        text-align: left;
+        margin-bottom: 9px;
+        border: none;
+        line-height: 51px;
+        float: right;
+        margin-right: 31px;
+        padding-left: 13px;
+        cursor: pointer;
+    }
+    .titleCateg {
+        font-family: Montserrat-Regular;
+        color: black;
+        font-size: 12px;
+    }
+    .traitEcole {
+        margin-left: 3px;
+    }
+    .ecole {
+        background-color: #FFCBAF !important;
+        /*cursor: pointer;*/
+    }
+    .part {
+        background-color: #C5E697 !important;
+        /*cursor: pointer;*/
+    }
+    .cse {
+        background-color: #BCD6FF !important;
+        /*cursor: pointer;*/
+    }
+    .btnAddSejour {
+        border-radius: 25px;
+        background-color: #F09E7A;
+        width: 183px;
+        height: 35px;
+        border: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        color: white;
+        font-family: Montserrat-SemiBold;
+        font-size: 13px;
+        line-height: 35px;
+        text-align: center;
+        outline: none !important;
+        margin-top: 32px;
+        margin-left: 51px;
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        transition: 0.5s;
+        margin-left: 68%;
+        margin-bottom: 2%;
+    }
+    .btnAddSejour:hover {
+        background-color: #41A2AA;
+    }
+    /*******************************************/
+    /************ Style Tab Sejour ************/
+    .TabSejours {
+        width: 94.9% !important;
+        padding-left: 6px;
+    }
+    .headTabSejour {
+        font-family: Montserrat-Regular;
+        font-size: 13px;
+        border: none;
+    }
+    .titileHead {
+        font-family: Montserrat-Regular;
+        font-size: 16px;
+        padding-top: 20px !important;
+        padding-bottom: 3px !important;
+        padding-left: 10px !important;
+        padding-right: 4px !important;
+        border: none !important;
+        font-weight: initial !important;
+    }
+    .titleHeadNum {
+        font-family: 'Montserrat-Bold';
+        font-size: 16px;
+        width: 20%;
+    }
+    table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
+    table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before {
+        display: none;
+    }
+    .trSejour td {
+        border: none;
+        outline: none !important;
+        margin-bottom: 16px;
+        border-bottom: 14px solid white;
+        padding-top: 0.65em;
+        padding-bottom: 0.6em;
+    }
+    .trSejour td:last-of-type {
+        padding-top: 0.5em;
+        padding-bottom: 0.35em;
+        padding-left: 1.5em;
+    }
+    .rouge {
+        background-color: #C70000 !important;
+        color: #fff !important;
+    }
+    .trSejour td span {
+        display: block;
+        width: 100%;
+        height: 90px;
+        line-height: 29px;
+        text-align: center;
+        background-color: white;
+    }
+    .BtnDetailSejour {
+        height: 35px;
+        width: 165px;
+        background: transparent;
+        box-shadow: none;
+        border: 1px solid black;
+        text-transform: uppercase;
+        font-size: 13px;
+        font-family: Montserrat-Regular;
+        border-radius: 25px;
+        padding-left: 3px;
+        outline: none !important;
+        text-align: center;
+        line-height: 37px;
+        margin-bottom: 5px;
+    }
+    .ContentSejours {
+        min-height: 100vh;
+    }
+    .TabContent {
+        overflow: hidden;
+        overflow-x: auto;
+    }
+    .HeaderSearch{
+        display: none;
+    }
+    .SerchContent, .whtiespace {
+        display: none;
+    }
+}
+
+@media (max-width: 1500px) {
+    .card {
+        border: 1px solid #41a2aa;
+        width: 83%;
+        margin: auto;
+    }
+    .btnAddSejour {
+        margin-left: 72%;
+        height: 34px;
+        line-height: 2%;
+    }
+    .CategSejour {
+        margin-right: 18px;
+    }
+    .titleHeadNum {
+        font-family: Montserrat-Bold;
+        font-size: 12px;
+    }
+    .rouge {
+        background-color: #C70000 !important;
+        color: #fff !important;
+    }
+    .FiltreContent {
+        text-align: center;
+        margin-top: 76px;
+    }
+    .titileHead {
+        font-family: Montserrat-Regular;
+        font-size: 12px;
+    }
+    .dataTables_filter {
+        text-align: end;
+        padding-right: 50px;
+    }
+    .titleHeadNum {
+        font-family: Montserrat-Bold;
+        font-size: 12px;
+    }
+    .titleHeadNom {
+        width: 100%
+    }
+    .TabSejours {
+        width: 94.9% !important;
+        padding-left: 6px;
+        font-size: 12px;
+    }
+    .BtnDetailSejour {
+        height: 30px;
+        width: 132px;
+        background: transparent;
+        box-shadow: none;
+        border: 1px solid black;
+        text-transform: uppercase;
+        font-size: 11px;
+        font-family: Montserrat-Regular;
+        border-radius: 25px;
+        padding-left: 3px;
+        outline: none !important;
+        text-align: center;
+        line-height: 28px;
+    }
+    .card-body {
+        padding: 0px 100px 25px 100px;
+    }
+}
+
+@media(max-width:1277px) {
+    .titleFiltreChoisi {
+        font-family: Montserrat-Bold;
+        font-size: 12px;
+        text-decoration: underline;
+        text-align: left;
+        text-transform: uppercase;
+        width: 174px;
+        float: right;
+        margin-right: 18px;
+        margin-bottom: 34px;
+        cursor: pointer;
+    }
+    .CategSejour {
+        margin-right: 0px;
+    }
+    .btnAddSejour {
+        margin-left: 71%;
+        height: 34px;
+        line-height: 2%;
+    }
+}
+
+@media(max-width:1200px) {
+    .btnAddSejour {
+        margin-left: 69%;
+        height: 34px;
+        line-height: 2%;
+    }
+}

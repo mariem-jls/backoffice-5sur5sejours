@@ -1,0 +1,336 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Advanced Plugins
+{% endblock %}
+
+{% block css %}
+	<!-- Plugins css -->
+	<link href="/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="/css/produits.css" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Advanced Form' }) }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="row no-margin bg-white" id="formProduit" style="min-height:100vh">
+		<fieldset class="fieldsetProduit col-lg-5 col-md-5" style="padding:20px;margin-left:6.8%; border:0;">
+			<legend class="legendProduit" style="font-family:'Montserrat-Regular';font-size:18px;">Produits</legend>
+			<div class="form-inline" id="groupNomProduit">
+				<input type="text" id="InputNomProduit" value="{{ produit.labeletype }}" class="form-control" style="border:0">
+				&nbsp;
+				<i class="fa fa-pen"> </i>&nbsp;
+				<div class="invalid-feedback trn" style="display:none" id="nomMessage">Ce champs est obligatoire!*</div>
+				<div class="publier">
+					<div class="box-1" id="smsToggle">
+						<input type='checkbox' {% if produit.statut == "publier" %} checked {% endif %} name="sms" id="smsInput"/>
+						<span class="toogle"></span>
+					</div>
+					<span class="sms">Publier</span>
+				</div>
+			</div>
+			<div class="form-group formProduits">
+				<div class="form-inline">
+					<i class="fa-solid fa-info"></i>&nbsp;
+					<label class="col-form-label produitlabel" style="font-family:'Montserrat-Bold';font-size:13px;" for="caractProduit">Caractéristiques produit</label>
+				</div>
+				<div class="inputpadding">
+					<textarea class="form-control inputProduit" id="caractProduit">{{ produit.description }}</textarea>
+					<div class="invalid-feedback trn" style="display:none" id="caractMessage">Ce champs est obligatoire!*</div>
+				</div>
+			</div>
+			<div class="form-group formProduits">
+				<div class="form-inline">
+					<i class="fa-solid fa-thumbs-up"></i>&nbsp;
+					<label class="col-form-label produitlabel" style="font-family:'Montserrat-Bold';font-size:13px;">Les plus produit</label>
+				</div>
+				<div class="inputpadding">
+					<textarea class="form-control inputProduit" id="plus">{{ produit.plusDescription }}</textarea>
+					<div class="invalid-feedback trn" style="display:none" id="plusMessage">Ce champs est obligatoire*</div>
+				</div>
+			</div>
+			<div class="form-group formProduits">
+				<div class="form-inline">
+					<i class="fa-solid fa-hand-holding-dollar"></i>&nbsp;
+					<label class="col-form-label produitlabel" style="font-family:'Montserrat-Bold';font-size:13px;" for="traifProduit">Tarif & Frais de port</label>
+				</div>
+				<div class="inputpadding">
+					<textarea class="form-control inputProduit" id="traifProduit">{{ produit.tarifs }}</textarea>
+					<div class="invalid-feedback trn" style="display:none" id="traifMessage">Ce champs est obligatoire!*</div>
+				</div>
+			</div>
+			<div class="form-inline inputpadding" style="margin-bottom: 10px">
+				<div class="col-sm-4">
+					<div class="input-group">
+						<label class="col-sm-12 labelO">Reversement</label>
+						<input style="border:1px solid #F09E7A;" type="text" id="reversement" value="{{ produit.reversement ?: '0' }}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control">
+						<div class="input-group-append">
+							<span style="background-color:#F09E7A;color: white;" class="input-group-text">%</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="form-inline" style="border-top:1px solid gray;padding-top: 25px;">
+				<div id="NewPhotos">
+					{% for photo in produit.attachements %}
+						<div class="col-2" id="photo-{{ photo.idAttachement.id }}">
+							<img src="{{ asset('images/produits/' ~ photo.idAttachement.path) }}" class="img-thumbnail" data-bs-target="#produitCarousel" data-bs-slide-to="{{ loop.index0 }}" alt="{{ produit.labeletype }}">
+							<button class="btn btnRemove" type="button" onclick="supprimerOldImage('{{ photo.idTypep.id }}', '{{ photo.idAttachement.id }}')">
+								<i class="fa fa-trash trash"></i>
+							</button>
+						</div>
+					{% endfor %}
+				</div>
+				<div class="inputpadding">
+					<button class="btn" style="margin-top: 15px;border-color:#F09E7A;border-radius: 100%" onclick="document.querySelector('#myDrop input[type=file]').click();">
+						<i style="color:#F09E7A;" class="fa fa-plus"></i>
+					</button>
+				</div>
+				<div class="dropzone dz-clickable" id="myDrop" style="display:none;margin-top: 10px;">
+					<div class="dz-default dz-message" data-dz-message="">
+						<span>Télécharger Photos produits</span>
+					</div>
+					<input type="file" id="photoInput" name="photos[]" multiple style="display: none;" onchange="previewSelectedPhotos(this.files)">
+				</div>
+			</div>
+
+			<a type="button" href="/produits" class="btn retour">Retour</a>
+			<button type="button" onclick="ModifierProduit({{ produit.id }})" class="btn sauvgarder">Enregistrer</button>
+		</fieldset>
+
+	</div>
+	<!-- end row -->
+{% endblock %}
+{% block javascript %}
+	<script src="/libs/selectize/js/standalone/selectize.min.js"></script>
+	<script src="/libs/mohithg-switchery/switchery.min.js"></script>
+	<script src="/libs/multiselect/js/jquery.multi-select.js"></script>
+	<script src="/libs/select2/js/select2.min.js"></script>
+	{# <script src="/libs/jquery-mockjax/jquery.mockjax.min.js"></script> #}
+	<script src="/libs/devbridge-autocomplete/jquery.autocomplete.min.js"></script>
+	<script src="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+	<script src="/libs/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
+
+	<!-- Init js-->
+	{# <script src="/js/pages/form-advanced.init.js"></script> #}
+	<script>
+		var pathListeProduit ='{{ path('produits_index') }}';
+	</script>
+	<script>
+		var pathCreationProduit = '{{ path('produits_new') }}';
+	</script>
+	{# <script> var uploadImage='{{ path('fileuploadhandler') }}' ;</script> #}
+	<script src="{{'/js/produits.js'}}"></script>
+	<script>
+		var pathModifierTypeProduit = '{{ path('produits_edit', {'id': produit.id}) }}';
+
+		var pathsupprimerNewImageProduit = "{{ path('suprimerphoto') }}";
+		
+		function previewSelectedPhotos(files) {
+			var newPhotos = [];
+			
+			for (var i = 0; i < files.length; i++) {
+				var file = files[i];
+				var reader = new FileReader();
+				
+				reader.onload = (function(file) {
+					return function(e) {
+						newPhotos.push({ id: '', path: e.target.result });
+						if (newPhotos.length === files.length) {
+							addNewPhotosToDisplay(newPhotos);
+						}
+					};
+				})(file);
+				
+				reader.readAsDataURL(file);
+			}
+		}
+
+		function addNewPhotosToDisplay(photos) {
+			var newPhotosContainer = document.getElementById('NewPhotos');
+			photos.forEach(photo => {
+				var newPhotoDiv = document.createElement('div');
+				newPhotoDiv.className = 'col-2';
+				newPhotoDiv.id = 'photo-' + (photo.id || new Date().getTime());
+				newPhotoDiv.innerHTML = `
+					<img src="${photo.path}" class="img-thumbnail" alt="Photo">
+					<button class="btn btnRemove" type="button" onclick="supprimerOldImage('${photo.id || new Date().getTime()}')">
+						<i class="fa fa-trash trash"></i>
+					</button>`;
+				newPhotosContainer.appendChild(newPhotoDiv);
+			});
+		}
+
+		function supprimerOldImage(id, idImg) {
+			var $_data = {
+			'id': id,
+			'IdAttachement': idImg
+			};
+
+			// Log the data object to debug
+			console.log('Data being sent:', $_data);
+			document.getElementById('photo-' + idImg).remove();
+			// Return the data object for further inspection if needed
+			return $.ajax({
+			type: "POST",
+			url: pathsupprimerNewImageProduit,
+			data: $_data,
+			success: function (response) { // Log the response from the server
+			console.log('Response from server:', response);
+			},
+			error: function (jqXHR, textStatus, errorThrown) { // Log any errors that occur
+			console.error('AJAX error:', textStatus, errorThrown);
+			}
+			});
+		}
+		// Initialize Dropzone for new photos
+		Dropzone.options.myDrop = {
+			url: '/fileuploadhandler', // Update with your upload URL
+			autoProcessQueue: false,
+			addRemoveLinks: true,
+			init: function () {
+			this.on("success", function (file, response) { // Handle the successful upload here, e.g., append the new photo to the list
+			var newPhotoHtml = `
+								<div class="col-2" id="new-photo-${
+			response.photoId
+			}">
+									<img src="${
+			response.photoUrl
+			}" class="img-thumbnail" alt="${
+			response.photoLabel
+			}">
+									<button class="btn btnRemove" type="button" onclick="supprimerNewImage('${
+			response.photoId
+			}')">
+										<i class="fa fa-trash trash"></i>
+									</button>
+								</div>`;
+			document.getElementById('NewPhotos').insertAdjacentHTML('beforeend', newPhotoHtml);
+			});
+			}
+		};
+
+		function supprimerNewImage(photoId) {
+		// Add logic to handle server-side removal if necessary
+		// Example: make an AJAX request to remove the photo from the server
+
+		// Remove the photo element from the DOM
+		document.getElementById('new-photo-' + photoId).remove();
+		}
+		// Example of how to call the function and handle the returned AJAX object
+	
+
+		function supprimerNewImage($id) {
+		$cloudImages.splice($id, 1);
+		console.log($cloudImages);
+		}
+		function supprimerNewImageNewConditionnement($id) {
+		$cloudImagesCondition.splice($id, 1);
+		console.log($cloudImagesCondition);
+		}
+		function supprimerNewImageOldConditionnement($id) {
+		$cloudImagesOldCondition.splice($id, 1);
+		console.log($cloudImagesOldCondition);
+		}
+		function ModifierProduit(idProduit) {
+			var nomProduit = document.getElementById('InputNomProduit').value;
+			var caractProduit = document.getElementById('caractProduit').value;
+			var plusProduit = document.getElementById('plus').value;
+			var tarifProduit = document.getElementById('traifProduit').value;
+			var reversement = document.getElementById('reversement').value;
+			var statut = document.getElementById('smsInput').checked ? 'publier' : 'non-publier';
+			
+			// Client-side validation
+			if (!nomProduit) {
+				document.getElementById('nomMessage').style.display = 'block';
+				return;
+			} else {
+				document.getElementById('nomMessage').style.display = 'none';
+			}
+
+			if (!caractProduit) {
+				document.getElementById('caractMessage').style.display = 'block';
+				return;
+			} else {
+				document.getElementById('caractMessage').style.display = 'none';
+			}
+
+			if (!plusProduit) {
+				document.getElementById('plusMessage').style.display = 'block';
+				return;
+			} else {
+				document.getElementById('plusMessage').style.display = 'none';
+			}
+
+			if (!tarifProduit) {
+				document.getElementById('traifMessage').style.display = 'block';
+				return;
+			} else {
+				document.getElementById('traifMessage').style.display = 'none';
+			}
+		/*
+			// Prepare the data to be sent
+			var data = {
+				nomProduit: nomProduit,
+				caractProduit: caractProduit,
+				plusProduit: plusProduit,
+				tarifProduit: tarifProduit,
+				reversement: reversement,
+				statut: statut
+			};
+			console.log(data);
+			*/
+			console.log('idProduit', idProduit);
+			console.log('nomProduit', nomProduit);
+			console.log('caractProduit', caractProduit);
+			console.log('plusProduit', plusProduit);
+			console.log('tarifProduit', tarifProduit);
+			console.log('reversement', reversement);
+			console.log('statut', statut);
+			var formData = new FormData();
+			formData.append('nomProduit', nomProduit);
+			formData.append('caractProduit', caractProduit);
+			formData.append('plusProduit', plusProduit);
+			formData.append('tarifProduit', tarifProduit);
+			formData.append('reversement', reversement);
+			formData.append('statut', statut);
+
+			var fileInput = document.querySelector('#myDrop input[type="file"]');
+			if (fileInput.files.length > 0) {
+				for (var i = 0; i < fileInput.files.length; i++) {
+					formData.append('photos[]', fileInput.files[i]);
+				}
+			}
+			var formDataObj = {};
+			formData.forEach((value, key) => {
+				formDataObj[key] = value;
+			});
+			console.log(JSON.stringify(formDataObj));
+			
+			// Send data via AJAX
+			fetch( '/produit/modifier/' + idProduit, {
+				method: 'POST',
+				body: formData,
+			})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+				window.location.href = '{{ path('produits_index') }}';
+			})
+			.catch(error => {
+				console.error('Error:', error);
+			});
+						
+		}
+
+	</script>
+{% endblock %}

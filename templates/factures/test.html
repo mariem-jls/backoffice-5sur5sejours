@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <style>
+        .iconeExport {
+			font-size: 30px;
+			color: #41A2AA;
+		}
+		.divbtnExport {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center; /* Ensures buttons are vertically aligned */
+			gap: 10px; /* Space between buttons */
+		}
+
+		.btnExport {
+			outline: none !important;
+			font-size: 30px;
+			height: fit-content;
+			box-shadow: none;
+			/* background-color: none; */
+			background-color: #ffbd16;
+			text-align: center;
+			color: white;
+		}
+    </style>
+</head>
+<body>
+    <div class="row divbtnExport">
+        <button class="btnExport" title="Exporter" type="submit" form="form1">
+            <i class="fa fa-file-excel iconeExport" aria-hidden="true"></i>
+        </button>
+        <button class="btnExport" onclick="zipFacturesFromDataTables()" title="Télécharger les factures">
+            <i class="fa-solid fa-file-zipper iconeExport" aria-hidden="true"></i>
+        </button>
+    </div>
+</body>
+</html>

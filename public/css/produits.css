@@ -1,0 +1,286 @@
+@media(max-width: 5000px) {
+    /*******/
+
+    #ajouterCondition {
+        width: 210px;
+        position: relative;
+        bottom: 30px;
+        left: 50%
+    }
+   
+    /****/
+    .slideshow-container {
+        max-width: 1000px;
+        position: relative;
+        margin: auto;
+    }
+    /* Hide the images by default */
+    /* Next & previous buttons */
+    .prev,
+    .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -22px;
+        padding: 16px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+    }
+    .no-margin {
+        margin: 0;
+    }
+    /* Position the "next button" to the right */
+    .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+    }
+    /* On hover, add a black background color with a little bit see-through */
+    .prev:hover,
+    .next:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+    /* Caption text */
+    /* Number text (1/3 etc) */
+    .numbertext {
+        color: #f2f2f2;
+        font-size: 12px;
+        padding: 8px 12px;
+        position: absolute;
+        top: 0;
+    }
+    a:not([href]):not([tabindex]) {
+        color: inherit;
+        margin-left: -7%;
+        text-decoration: none;
+        margin-right: -7%;
+        /* width: 10%; */
+    }
+    /* The dots/bullets/indicators */
+    .dot {
+        cursor: pointer;
+        height: 15px;
+        width: 15px;
+        margin: 0 2px;
+        background-color: #bbb;
+        border-radius: 50%;
+        display: inline-block;
+        transition: background-color 0.6s ease;
+    }
+    .activeA,
+    .dot:hover {
+        background-color: #717171;
+    }
+    /* Fading animation */
+    .fade {
+        -webkit-animation-name: fade;
+        -webkit-animation-duration: 10000000000s;
+        animation-name: fade;
+        animation-duration: 1000000000s;
+    }
+    @-webkit-keyframes fade {
+        from {
+            opacity: .4
+        }
+        to {
+            opacity: 1
+        }
+    }
+    @keyframes fade {
+        from {
+            opacity: .4
+        }
+        to {
+            opacity: 1
+        }
+    }
+    .mySlides {
+        display: none;
+    }
+    .containerAllPorduitScoll {
+        display: none;
+    }
+    .labelproduit {
+        font-family: 'Montserrat-Bold';
+        font-size: 13px;
+    }
+    .inputProduit focus {
+        border: none;
+    }
+    .inputProduit {
+        border: 1px solid #F09E7A;
+        height: 200px!important;
+    }
+    .legendProduit {
+        width: 33%;
+        font-size: 24px;
+        display: block;
+        width: 28%;
+        font-family: inherit;
+        line-height: 1;
+    }
+    .inputpadding {
+        padding-left: 25px;
+    }
+    #ImgNomProduit {
+        width: 18px;
+        height: 18px;
+        margin-left: 20px;
+    }
+    #groupNomProduit {
+        margin-bottom: 10px;
+        display: flex;
+    }
+    .formProduits {
+        padding-left: 15px;
+        border-top: 1px solid gray;
+    }
+    .formProduitsConditionnement {
+        padding-left: 15px;
+    }
+    .labelO {
+        font-size: 12px;
+    }
+    .iconFormProduits {
+        width: 20px;
+        height: 20px;
+    }
+    .AddPhotos {
+        padding-top: 10px;
+        border-top: 1px solid gray;
+    }
+    #formProduit {
+        margin-top: 100px;
+    }
+    
+    /*
+     *  STYLE 7
+     */
+    #style-7::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        background-color: #F5F5F5;
+        border-radius: 10px;
+    }
+    #style-7::-webkit-scrollbar {
+        width: 10px;
+        background-color: #F5F5F5;
+    }
+    #style-7::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0.44, #41A2AA), color-stop(0.72, #41A2AA), color-stop(0.86, #41A2AA));
+    }
+    
+    .modifpen {
+        cursor: pointer;
+        margin-top: -8px;
+    }
+    .modifpen:hover {
+        cursor: pointer;
+        margin-top: -8px;
+        color: #fd7e14;
+    }
+    .trash {
+        color: #F09E7A;
+    }
+    .btn {
+        border-color: #F09E7A;
+        border-radius: 100%;
+        background-color: #fff;
+    }
+    .right {
+        border-color: #f09e7a;
+        background: #f09e7a;
+        color: #fff;
+        font-weight: 700;
+        border-radius: 22px;
+        height: 37px;
+        font-size: 13px;
+        width: 236px;
+        float: right;
+    }
+    .btn1 {
+        border-color: #F09E7A;
+        border-radius: 100%;
+        background-color: #fff;
+        margin-left: -40px;
+        margin-top: -66px;
+    }
+    
+    
+    .retour {
+        margin-top: 50px;
+        background-color: #F09E7A;
+        border-radius: 20px;
+        color: #fff;
+        width: 122px;
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        transition: 0.5s;
+        cursor: pointer;
+        border: none;
+    }
+    .retour:hover {
+        color: #fff;
+        background-color: #41a2aa;
+    }
+    .sauvgarder {
+        margin-top: 50px;
+        background-color: #F09E7A;
+        border-radius: 20px;
+        color: #fff;
+        width: 122px;
+        margin-left: 1%;
+        border: none;
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    .sauvgarder:hover {
+        color: #fff;
+        background-color: #41a2aa;
+    }
+    .ret {
+        margin-top: 50px;
+        margin-left: 20px;
+        background-color: #F09E7A;
+        border-radius: 20px;
+        color: #fff;
+        width: 113px;
+        border: none;
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    .ret:hover {
+        color: #fff;
+        background-color: #41a2aa;
+    }
+    .sauv {
+        margin-top: 50px;
+        background-color: #F09E7A;
+        border-radius: 20px;
+        color: #fff;
+        width: 113px;
+        margin-left: 2%;
+        border: none;
+        -webkit-transition: 0.5s;
+        -moz-transition: 0.5s;
+        -o-transition: 0.5s;
+        transition: 0.5s;
+        cursor: pointer;
+    }
+    .sauv:hover {
+        color: #fff;
+        background-color: #41a2aa;
+    }
+}
+

@@ -1,0 +1,85 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Datatables
+{% endblock %}
+
+{% block css %}
+	<!-- third party css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link
+	href="/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+<!-- third party css end -->
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Supports' }) }}
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="mt-0 header-title">Liste Supports</h4>
+					<table id="datatable-buttons" class="table table-striped table-bordered ">
+						<thead>
+							<tr>
+								<th>Nom</th>
+								<th>Prenom</th>
+								<th>Email</th>
+								<th>Téléphone</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for user in supports %}
+								<tr>
+									<td>{{ user.nom }}</td>
+									<td>{{ user.prenom }}</td>
+									<td>{{ user.email }}</td>
+									<td>{{ user.nummobile }}</td>
+									<td>
+										<div class="btn-group">
+											<a class="btn btn-info" href="{{ path('user_show', {id: user.id}) }}">Afficher</a>
+											<a class="btn btn-success" href="{{ path('user_edit', {id: user.id}) }}">Modifier</a>
+											{{ include('users/_delete_form.html.twig', {'user': user}) }}
+										</div>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- end row -->
+
+
+{% endblock %}
+
+{% block javascript %}<!-- third party js -->
+	 <script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+	 <script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	 <script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	 <script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+	 <script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	 <script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	 <script src="/libs/pdfmake/build/pdfmake.min.js"></script>
+	 <script src="/libs/pdfmake/build/vfs_fonts.js"></script>
+	<!-- third party js ends -->
+
+	<!-- Datatables init -->
+	 <script src="/js/pages/datatables.init.js"></script>
+
+{% endblock %}

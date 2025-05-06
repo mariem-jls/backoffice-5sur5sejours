@@ -1,0 +1,118 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Datatables
+{% endblock %}
+
+{% block css %}
+	<!-- third party css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link
+	href="/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+<!-- third party css end -->
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Séjours' }) }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="mt-0 header-title">Liste  Séjours</h4>
+					<a href="{{ path('sejour_new') }}" class="btn btn-primary">Create new</a>
+					<table class="table">
+						<thead>
+							<tr>
+								<th>Id</th>
+								<th>Code Sejour</th>
+								<th>Date Creation Code</th>
+								<th>Date Fin Code</th>
+								<th>Them Sejour</th>
+								<th>Adresse Sejour</th>
+								<th>Pays</th>
+								<th>Ville</th>
+								<th>Code Postal</th>
+								<th>Date Debut Sejour</th>
+								<th>Date Fin Sejour</th>
+								<th>Nb Photo Diposer</th>
+								<th>Paym</th>
+								<th>Album Gratuie</th>
+								<th>Nb Message</th>
+								<th>Etat Acomp Album</th>
+								<th>Etat Adresse Carte</th>
+								<th>Statut</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for sejour in sejours %}
+								<tr>
+									<td>{{ sejour.id }}</td>
+									<td>{{ sejour.codeSejour }}</td>
+									<td>{{ sejour.dateCreationCode ? sejour.dateCreationCode|date('Y-m-d') : '' }}</td>
+									<td>{{ sejour.dateFinCode ? sejour.dateFinCode|date('Y-m-d') : '' }}</td>
+									<td>{{ sejour.themSejour }}</td>
+									<td>{{ sejour.adresseSejour }}</td>
+									<td>{{ sejour.pays }}</td>
+									<td>{{ sejour.ville }}</td>
+									<td>{{ sejour.codePostal }}</td>
+									<td>{{ sejour.dateDebutSejour ? sejour.dateDebutSejour|date('Y-m-d') : '' }}</td>
+									<td>{{ sejour.dateFinSejour ? sejour.dateFinSejour|date('Y-m-d') : '' }}</td>
+									<td>{{ sejour.nbPhotoDiposer }}</td>
+									<td>{{ sejour.paym }}</td>
+									<td>{{ sejour.albumgratuie }}</td>
+									<td>{{ sejour.nbMessage }}</td>
+									<td>{{ sejour.etatAcompAlbum ? 'Yes' : 'No' }}</td>
+									<td>{{ sejour.etatAdresseCarte ? 'Yes' : 'No' }}</td>
+									<td>{{ sejour.statut ? sejour.statut.name : '' }}</td>
+									<td>
+										<a href="{{ path('sejour_show', {'id': sejour.id}) }}">show</a>
+										<a href="{{ path('sejour_edit', {'id': sejour.id}) }}">edit</a>
+										<form method="post" action="{{ path('sejour_delete', {'id': sejour.id}) }}" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sejour.id) }}">
+											<button class="btn btn-danger">delete</button>
+										</form>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="18">No records found</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- end row -->
+
+
+{% endblock %}
+
+{% block javascript %}<!-- third party js -->
+	 <script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+	 <script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	 <script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	 <script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	 <script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+	 <script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	 <script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	 <script src="/libs/pdfmake/build/pdfmake.min.js"></script>
+	 <script src="/libs/pdfmake/build/vfs_fonts.js"></script>
+	<!-- third party js ends -->
+
+	<!-- Datatables init -->
+	 <script src="/js/pages/datatables.init.js"></script>
+
+{% endblock %}

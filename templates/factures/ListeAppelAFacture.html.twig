@@ -1,0 +1,578 @@
+{% extends "Admin/LayoutAdmin.html.twig" %}
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" href="{{'/css/parent.css'}}">
+	<link type="text/css" rel="stylesheet" href="{{'/css/jquery-ui.css'}}">
+	<link rel="stylesheet" href="{{ '/Plugins/css/daterangepicker.min.css' }}">
+	<link type="text/css" rel="stylesheet" href="{{'/css/acceuil.css'}}">
+	<link type="text/css" rel="stylesheet" href="{{'/css/c3.css'}}">
+	<link type="text/css" rel="stylesheet" href="{{'/css/Comptable.css'}}">
+	<link type="text/css" rel="stylesheet" href="{{'/css/dataTables.bootstrap4.min.css'}}">
+	<link type="text/css" rel="stylesheet" href="{{'/css/responsive.bootstrap4.min.css'}}">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="{{'/css/DashboardAdmin.css'}}">
+	<style>
+		td {
+			text-align: center !important;
+		}
+		th {
+			text-align: center !important;
+		}
+		.contentDetailsComptable {
+			margin: 0 !important;
+		}
+		.dataTables_filter {
+			display: none;
+		}
+		/*.RechercheSejour{width: 800px;}*/
+		.listeCmdComptable {
+			margin-top: 10% !important;
+		}
+	</style>
+{% endblock %}
+{% block Content %}
+	<div class="row no-margin contentDetailsComptable">
+		{#<div class="col-11 col-md-11 col-ms-11 col-sm-11 col-lg-11 col-xl-11 col-xs-11 no-padding left listeFiltreComptable">#}
+		{#<h1 class="titlesComptable titleFiltre">Filtre par date</h1>#}
+		{#<div class="row no-margin" >#}
+		{#<div class="col-3 col-md-3 col-ms-3 col-sm-3 col-lg-3 col-xl-3 col-xs-3 no-padding left divCalendrier">#}
+		{#<div style="display:flex;" class="col-12 col-md-12 col-ms-12 col-sm-12 col-lg-12 col-xl-12 col-xs-12">#}
+		{#<input type="text" readonly  style="cursor: pointer" placeholder="Choisir une durée" id="inputState" autocomplete="off" class="Custum form-control hasDatepicker inputState" >#}
+		{#<button class="btn " style="background-color: #41A2AA;color: #fff;margin-left: 5px" id="okRechercher">OK</button>#}
+		{#<button class="btn " style="background-color: #41A2AA;color: #fff;margin-left: 5px"  onclick="location.reload();">Tous</button>#}
+		{#</div>#}
+		{#<form id="form1" class="col-11 col-md-11 col-ms-11 col-sm-11 col-lg-11 col-xl-11 col-xs-11 no-padding left formDash" method="post" action="{{path('comptableAppelFactXlx')}}" style="display:none;">#}
+		{#<input type="hidden" id="dateDebut" name="datedebut">#}
+		{#<input type="hidden" id="dateFin" name="datefin">#}
+		{#</form>#}
+		{#<div class="contenuCal">#}
+		{#</div>#}
+		{#</div>#}
+		{#</div>#}
+		{#</div>#}
+		{#<div class="col-1 col-md-1 col-ms-1 col-sm-1 col-lg-1 col-xl-1 col-xs-1 no-padding right divbtnExport">#}
+		{#<button class="btnExport" title="Exporter"  type="submit" form="form1"> <i class="fa fa-file-excel-o iconeExport" aria-hidden="true"></i> </button>#}
+		{#<button class="btnExport" onclick="zipFacturesFromDataTables()" title="Télécharger les appels factures" > <i class="fa fa-file-zip-o iconeExport" aria-hidden="true"></i></button>#}
+		{#</div>#}
+		{#{% if app.user %}   {% if is_granted('ROLE_ADMIN') %}#}
+		{#<div style="display:flex;" >#}
+		{#<button class="btn" onclick='location.href="{{ path('AdminComptable') }}"' style="color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Liste des factures</button>#}
+		{#<button class="btn" onclick='location.href="{{ path('ListeFacutresConnexion') }}"' style="display:none;color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Factures connexion</button>#}
+		{#<button class="btn" onclick='location.href="{{ path('ListeAppelAFacutre') }}"' style="color: white;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;background-color:#41A2AA ">Appels à facture</button>#}
+		{#</div>#}
+		{#{% endif %}#}
+		{#{% if is_granted('ROLE_COMPTABLE') %}#}
+		{#<div style="display:flex;" >#}
+		{#<button class="btn" onclick='location.href="{{ path('ListeCommandes') }}"' style="color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Liste des factures</button>#}
+		{#<button class="btn" onclick='location.href="{{ path('ListeAppelAFacutre') }}"' style="color: white;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;background-color:#41A2AA ">Appels à facture</button>#}
+		{#</div>#}
+		{#{% endif %}#}
+		{#{% endif %}#}<div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1 whtiespace"> </div>
+		<div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-xs-10  borderB no-margin RechercheSejour">
+			<div style="display:flex;position: relative;bottom: 20px;right: 30px">
+				{#<button class="btn" onclick='location.href="{{ path('AdminComptable') }}"' style="color: white;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;background-color:#41A2AA">Liste des factures</button>#}
+				{#<button class="btn" onclick='location.href="{{ path('ListeAppelAFacutre') }}"' style="color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Appels à facture</button>#}
+					{% if app.user %}
+						{% if is_granted('ROLE_ADMIN') %}
+							<div style="display:flex;"> <button class="btn" onclick='location.href="{{ path(' admincomptable') }}"' style="color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Liste des factures</button>
+							<button class="btn" onclick='location.href="{{ path(' listefacutresconnexion') }}"' style="display:none;color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Factures connexion</button>
+							<button class="btn" onclick='location.href="{{ path(' listeappelafacutre') }}"' style="color: white;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;background-color:#41A2AA ">Appels à facture</button>
+						</div>
+					{% endif %}
+					{% if is_granted('ROLE_COMPTABLE') %}
+						<div style="display:flex;">
+							<button class="btn" onclick='location.href="{{ path(' listecommandes') }}"' style="color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Liste des factures</button>
+							<button class="btn" onclick='location.href="{{ path(' listeappelafacutre') }}"' style="color: white;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;background-color:#41A2AA ">Appels à facture</button>
+						</div>
+					{% endif %}
+				{% endif %}
+			</div>
+			<h3 class="titreRecherche" style="text-align: left;padding-left: 10px;">Recherche avancée par:</h3><br>
+			<form action="{{ path('ExportAppelAFacture') }}" id="form1" method="POST">
+				<div class="form" id="infoAcc" style="display: block;">
+					<div class="form-row no-margin">
+						{#<div class=" col-xl-12 col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding ">#}
+						{#<h5 class="desciptionRecherche"> Information commande  </h5>#}
+						{#<div class=" col-xl-12 col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding ">#}
+						{#<hr width="100%" color="#BCD6FF">#}
+						{#</div>#}
+						{#</div>#}
+						<br>
+							<div class="col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6   divCalendrier"> <label>
+								Période
+							</label>
+							<input type="text" placeholder="Choisir une durée" autocomplete="off" id="inputState" class=" form-control ">
+							<input type="hidden" name="datedebut" id="dateDebut">
+							<input type="hidden" name="datefin" id="dateFin">
+							<div class="contenuCal"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 "></div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 ">
+							<label>
+								Partenaire
+							</label>
+							<input type="text" autocomplete="off" name="idPartenaire" id="idPartenaire" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+							<div id="listePartenaire"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 ">
+							<label>Séjour</label>
+							<input type="text" autocomplete="off" name="idSejour" id="idSejour" class=" form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">
+							<div id="listeSejour"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 ">
+							<label>
+								Num cmd
+							</label>
+							<input name="idCommande" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding" id="idCommande" placeholder="Saisir numéro de la commande">
+							<div id="listeCommande"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6  ">
+							<label>
+								Num facture</label>
+							<input name="idFacture" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding" id="idFacture" placeholder="Saisir numéro de la commande">
+							<div id="listeFacture"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6  ">
+							<label>
+								Produits</label>
+							{#<input type="text" autocomplete="off" id="activatemail"#}
+							{#class=" form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">#}
+							<select name="idProduit" class="form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding" id="idProduit">
+								<option></option>
+								{% for produit in listeTypeProduit %}
+									<option value="{{ produit.id }}">
+										{{ produit.idTypeProduit.labeletype }}
+										{{ produit.sousTitre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+			</form>
+			<br>
+			<button type="button" id="okRechercher" class="btn circle rechBtn">Rechercher</button>
+			<br><br>
+		</div>
+		<div class="col-xl-1 col-lg-1 col-md-1 col-sm- col-1 no-padding FiltreContent"></div>
+		<h3 class="noneAucun" id="phraseparent" style="position: relative;margin-top: 30px;"></h3>
+		<div class="noneAucun col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1 no-padding FiltreContent"></div>
+		<div class="col-1 col-md-1 col-ms-1 col-sm-1 col-lg-1 col-xl-1 col-xs-1 no-padding right divbtnExport" style="position:relative;top:170px;left:79%;z-index: 1000;">
+			<button class="btnExport" title="Exporter" type="submit" form="form1">
+				<i class="fa fa-file-excel-o iconeExport" aria-hidden="true"></i>
+			</button>
+			<button class="btnExport" onclick="zipFacturesFromDataTables()" title="Télécharger les appels factures">
+				<i class="fa fa-file-zip-o iconeExport" aria-hidden="true"></i>
+			</button>
+		</div>
+	</div>
+	<div
+		class="row no-margin listeCmdComptable">
+		{#{{ dump(ListeCmd) }}#}
+		<table id="tab" class="table table-striped table-bordered" style="width:100%">
+			<thead>
+				<tr>
+					<th>Id client</th>
+					<th>Nom client</th>
+					<th>Num appel à facture</th>
+					<th>Date appel à facture</th>
+					<th>Produits</th>
+					<th>Montant HT</th>
+					<th>Quantité</th>
+					{#<th>Montant TVA</th>#}
+					<th>% reversement</th>
+					<th>Montant de reversement</th>
+					<th>Facture</th>
+				</tr>
+			</thead>
+			<tbody class="testclass">
+				{% for appelfact in ComandeFind %}
+					{% if appelfact.quantiter !=0 and appelfact.idComande.idSejour.reverseventepart!=0 %}
+						{% if dateNow!=appelfact.idComande.dateCreateCommande|date('Y-m') %}
+							<tr data-idpartenaire="{{appelfact.idComande.idSejour.idPartenaire.id}}" data-periode="{{appelfact.idComande.dateCreateCommande|date('Y-m')}}">
+								<td>
+									{{appelfact.idComande.idSejour.idEtablisment.id}}</td>
+								<td>
+									{{appelfact.idComande.idSejour.idEtablisment.nometab}}
+								</td>
+								<td>{{tabNumFacture[appelfact.idComande.idSejour.idPartenaire.id][appelfact.idComande.dateCreateCommande|date('Y-m')]["numAppelFacture"]}}</td>
+								<td>
+									{% if  appelfact.idComande.dateCreateCommande != null %}
+										{{appelfact.idComande.dateCreateCommande|date('d-m-Y') }}
+									{% endif %}
+								</td>
+								{% set Montant=(appelfact.idProduit.idConditionnement.montantTTC()*100)/120 %}
+								{% if appelfact.idProduit.pourcentage is null %}
+									{% set  pourcentageRemise = 0 %}
+								{% else %}
+									{% set  pourcentageRemise = appelfact.idProduit.pourcentage  %}
+								{% endif %}
+								{% set MontantHT=Montant-((Montant/100)*pourcentageRemise) %}
+								{% set REV=MontantHT*appelfact.quantiter*(appelfact.idComande.idSejour.reverseventepart/ 100)%}
+								{% set pourcentageR=0 %}
+								{% if (MontantHT*appelfact.quantiter) !=0 %}
+									{% set pourcentageR=(REV/(MontantHT*appelfact.quantiter))*100 %}
+								{% endif %}
+								<td>
+									{{appelfact.idProduit.idConditionnement.idTypeProduit.labeletype  }}
+									{{ appelfact.idProduit.idConditionnement.sousTitre  }}</td>
+
+								<td>{{ MontantHT|number_format(2) }}€
+								</td>
+								<td>{{ appelfact.quantiter }}</td>
+								{% if  appelfact.idProduit.idConditionnement.idTypeProduit.labeletype =="Connexion"%}
+									<td>
+										10
+									</td>
+								{% else %}
+									<td>{{ appelfact.idComande.idSejour.reverseventepart|number_format }}
+									</td>
+								{% endif %}
+								{% if  appelfact.idProduit.idConditionnement.idTypeProduit.labeletype =="Connexion"%}
+									{% set RevCnx=MontantHT*0.1 %}
+									<td>-
+										{{RevCnx|number_format(2) }}€</td>
+								{% else %}
+									<td>-
+										{{REV|number_format(2) }}€</td>
+								{% endif %}
+								<td style="text-align: center;">
+									<a class="lienFactPdf" href="{{ path('generatePdfReversementPartenaireParPeriode',{'idPartenaire': appelfact.idComande.idSejour.idPartenaire.id,'periode':appelfact.idComande.dateCreateCommande|date('Y-m')}) }}" target="_blank">
+										<i class="fa fa-file-pdf-o iconepdf" aria-hidden="true" title="Télécharger facture en PDF"></i>
+									</a>
+								</td>
+							</tr>
+						{% endif %}
+					{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+		<div class="row no-margin" style="display: none;">
+			<span class="EmptyData">
+				Pas d'informations pour le moment.</span>
+		</div>
+	</div>
+{% endblock %}
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{'/js/jquery.dataTables.min.js'}}"></script>
+	<script src="{{'/js/dataTables.bootstrap4.min.js'}}"></script>
+	<script src="{{'/js/dataTables.responsive.min.js'}}"></script>
+	<script src="{{'/js/responsive.bootstrap4.min.js'}}"></script>
+	<script src="{{'/Plugins/js/c3.js'}}"></script>
+	<script src="{{'/Plugins/js/d3.v3.min.js'}}"></script>
+	<script src="{{'/Plugins/js/jquery-us.js'}}"></script>
+	<script src="{{ '/Plugins/js/moment.js' }}"></script>
+	<script src="{{ '/Plugins/js/jquery.daterangepicker.min.js' }}"></script>
+	<script>
+		var table = $('#tab').DataTable({
+        language: {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+        },
+        responsive: {
+        details: {
+        display: $.fn.dataTable.Responsive.display.modal(
+        {
+        header: function (row) {
+        var data = row.data();
+        return 'Détails pour ' + data[1];
+        }
+        }
+        ),
+        renderer: $.fn.dataTable.Responsive.renderer.tableAll(
+        {tableClass: 'table'}
+        )
+        }
+        }
+        });
+        $(document).ready(function () {
+        $('#inputState').dateRangePicker({
+        singleMonth: true,
+        language: 'fr',
+        container: '.contenuCal',
+        opens: 'center',
+        getValue: function () {
+        if ($('#date-debut').val() && $('#date-fin').val()) 
+        return $('#date-debut').val() + $('#date-fin').val();
+        else 
+        return '';
+
+        },
+        setValue: function (s, s1, s2) {
+        $('#dateDebut').val(s1);
+        $('#dateFin').val(s2);
+        $('#inputState').val('Du ' + s1 + ' au ' + s2);
+        // changeDataTable(s1, s2);
+        }
+        });
+        });
+        // function changeDataTable(datedebut, datefin)
+        $('#okRechercher').on('click', function () {
+        $('#loaderAcc').css('display', 'block');
+        $test = validerChamps();
+        if ($test) {
+        data = {
+        "datedebut": $('#dateDebut').val(),
+        "datefin": $('#dateFin').val(),
+        "partenaire": $('#idPartenaire').val(),
+        "sejour": $('#idSejour').val(),
+        "numCmd": $('#idCommande').val(),
+        "numFacture": $('#idFacture').val(),
+        "produit": $('#idProduit').val()
+        };
+        $.ajax({
+        type: "POST",
+        url: '{{ path('comptableReversementParPeriodeRecherchercheAvancerVersion2') }}',
+        data: data,
+        success: function (result) {
+        $('#loaderAcc').css('display', 'none');
+        if (result.length !== 0) {
+        var contenu = "";
+        $('.EmptyDatasearch').css('display', 'none');
+        $('.dataTables_wrapper').css('display', 'block');
+        table.destroy();
+        $('#tab').find('tbody').empty();
+        $.each(result, function (key, cmd) {
+        var idcmd = cmd['Idcmd'];
+        var idclient = cmd['Idclient'];
+        var client = cmd['Client'];
+        var numfact = cmd['Numfacture'];
+        var dateFact = cmd['Datefacture'];
+        var qt = cmd['Quantite'];
+        var prd = cmd['Produits'];
+        var ttc = cmd['Montant_ttc'];
+        var rev = cmd['Rev'];
+        var ht = cmd['Montant_ht'];
+        var pourCent = cmd['pourCent'];
+        if (qt === null || qt === "" || qt === 0) {
+        qt = 0;
+        }
+        if (ttc === null || ttc === "" || ttc === 0) {
+        ttc = 0;
+        } else {
+        ttc = ttc.toFixed(2)
+        }
+        if (rev === null || rev === "" || rev === 0) {
+        rev = 0;
+        } else {
+        rev = rev.toFixed(2)
+        }
+        if (ht === null || ht === "" || ht === 0) {
+        ht = 0;
+        } else {
+        ht = ht.toFixed(2)
+        }
+        if (pourCent === null || pourCent === "" || pourCent === 0) {
+        pourCent = 0;
+        } else {
+        pourCent = pourCent;
+        }
+        var idPartenaire = cmd['idPart'];
+        var periode = cmd['periode'];
+        var url = "{{ path('generatePdfReversementPartenaireParPeriode',{'idPartenaire':'cmdid','periode':'pp'}) }}";
+        url = url.replace('cmdid', idPartenaire);
+        url = url.replace('pp', periode);
+        contenu = '<tr data-idPartenaire="' + idPartenaire + '" data-periode="' + periode + '">';
+        contenu = contenu + '<td>' + idclient + '</td> <td>' + client + '</td>';
+        contenu = contenu + '<td>' + numfact + '</td><td>' + dateFact + '</td>';
+        // contenu = contenu + '<td>'+numcmd+'</td><td>'+datecmd+'</td>';
+        contenu = contenu + '<td>' + prd + '</td>';
+        // contenu = contenu + '<td>'+ttc+'€</td><td>'+exp+'€</td>';
+        contenu = contenu + '<td>' + ht + '€</td><td>' + qt + '</td>';
+        contenu = contenu + '<td>' + pourCent + '</td>';
+        contenu = contenu + '<td>' + rev + '</td><td style="text-align: center;">';
+        contenu = contenu + '<a class="lienFactPdf" href="' + url + '" target="_blank"><i class="fa fa-file-pdf-o iconepdf" aria-hidden="true" title="Télécharger facture en PDF"></i></a>';
+        contenu = contenu + '</td></tr>';
+        $('#tab').find('tbody').append(contenu);
+        });
+        setTimeout(function () {
+        table = $('#tab').DataTable({
+        language: {
+        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+        },
+        responsive: {
+        details: {
+        display: $.fn.dataTable.Responsive.display.modal(
+        {
+        header: function (row) {
+        var data = row.data();
+        return 'Détails pour ' + data[1];
+        }
+        }
+        ),
+        renderer: $.fn.dataTable.Responsive.renderer.tableAll(
+        {tableClass: 'table'}
+        )
+        }
+        }
+        });
+        }, 50);
+        } else {
+        $('.EmptyDatasearch').remove();
+        $('.dataTables_wrapper').css('display', 'none');
+        contenu = '<div class="row no-margin" >';
+        contenu = contenu + '<span class="EmptyData EmptyDatasearch"> Pas d\'informations pour cette durée.</span> </div>';
+        $('.dataTables_wrapper').after(contenu);
+        }
+        $('#loaderAcc').css('display', 'none');
+        }
+        });
+        }
+        })
+        function validerChamps() {
+        $test = false;
+        if ($('#idProduit').val() == "") {
+        $testProduit = false
+        } else {
+        $testProduit = true;
+        }
+        if ($('#idFacture').val() == "") {
+        $testFacture = false
+        } else {
+        $testFacture = true;
+        }
+        if ($('#idCommande').val() == "") {
+        $testCmd = false
+        } else {
+        $testCmd = true;
+        }
+        if ($('#idSejour').val() == "") {
+        $testSej = false
+        } else {
+        $testSej = true;
+        }
+        if ($('#idPartenaire').val() == "") {
+        $testPart = false
+        } else {
+        $testPart = true;
+        }
+        if ($('#dateFin').val() == "" || $('#dateDebut').val() == "") {
+        $testPeriode = false
+        } else {
+        $testPeriode = true;
+        }
+        if ($testPeriode || $testProduit || $testCmd || $testFacture || $testPart || $testSej) {
+        $test = true;
+        } else {
+        $test = false;
+        }
+        return $test;
+        }
+        function StartExport() {
+        $('#loaderAcc').css('display', 'block');
+        $.ajax({type: "POST", url: '{{ path('comptableAppelFactXlx') }}', data: data, success: function (result) {}});
+        }
+        function zipFacturesFromDataTables() {
+        Swal.fire('', 'Merci de patienter jusqu\'à la fin de téléchargement.', 'success')
+        $('#loaderAcc').css('display', 'block');
+        // $factureParent = [];
+        $appelFacutre = [];
+        $periode = [];
+        $partenaires = [];
+        $i = 0;
+        var table = $('#tab').DataTable();
+        table.rows().every(function () {
+        // console.log( this.nodes().to$().attr('data-type'));
+        // $typeTr = this.nodes().to$().attr('data-type');
+        // console.log($typeTr);
+        // console.log($i);
+        $idPartenaire = this.nodes().to$().attr('data-idPartenaire');
+        console.log($idPartenaire);
+        $Periode = this.nodes().to$().attr('data-periode');
+        if ($Periode != "" && $idPartenaire != "") {
+        $partenaires.push({'idPartenaire': $idPartenaire, 'Periode': $Periode});
+        $i ++;
+        }
+        // $periode.push($Periode);
+        // $appelFacutre.push({'partenaire':$idPartenaire,'Periode':$Periode});
+        //     ['partenaire']= $idPartenaire;
+        // appelFacutre[$i]['Periode']= $Periode;
+        });
+        // var myNewPartenaire = $partenaires.filter(function(elem, index, self) {
+        //     return index === self.indexOf(elem);
+        // });
+        // const result=Array.from(new Set($partenaires.map(s=>s.partenaire)))
+        //     .map(partenaire=>{
+        //         return{
+        //             partenaire:partenaire,
+        //             Periode:$partenaires.find(s=>s.partenaire===partenaire).Periode
+        //         }
+        //     });
+        // var myNewPartenaire = $partenaires.filter(function(elem, index, self) {
+        //     return index === self.indexOf(elem);
+        // });
+        var myNewPartenaire = $partenaires.map(JSON.stringify).reverse() // convert to JSON string the array content, then reverse it (to check from end to begining).filter(function (item, index, arr) {
+        return arr.indexOf(item, index + 1) === -1;
+        }) // check if there is any occurence of the item in whole array.reverse().map(JSON.parse) // revert it to original state
+        console.log(myNewPartenaire)
+        // console.log($appelFacutre);
+        data = {
+        "partenaire": JSON.stringify(myNewPartenaire)
+        };
+
+        
+        $.ajax({
+        type: "POST",
+        url: '{{ path('ZipAppelFActVersion2') }}',
+        data: data,
+        success: function (result) {
+        $('#loaderAcc').css('display', 'none');
+        window.location.href = result;
+        },
+        error: function (xhr, status, errorThrown) {
+        $('#loaderAcc').css('display', 'none');
+        },
+        complete: function () {
+        $('#loaderAcc').css('display', 'none');
+        }
+        });
+        }
+        $(function () {
+        var available = [];{% for etablissement in alletablissement %}available.push({"id": {{ etablissement.getId() }}, "label":"{{ etablissement.getId() }}-{{ etablissement.getNometab() }}", "value":"{{ etablissement.getId() }}-{{ etablissement.getNometab() }}"});{% endfor %}
+        $("#idPartenaire").autocomplete({
+        source: available,
+        appendTo: "#listePartenaire",
+        classes: {
+        "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+        }
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+        return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+        };
+        });
+        $(function () {
+        var available = [];{% for sejour in listeSejour %}available.push({"id": {{ sejour["id"] }}, "label":"{{ sejour["id"] }}-{{ sejour["codeSejour"] }}", "value":"{{ sejour["id"] }}-{{ sejour["codeSejour"] }}"});{% endfor %}
+        $("#idSejour").autocomplete({
+        source: available,
+        appendTo: "#listeSejour",
+        classes: {
+        "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+        }
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+        return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+        };
+        });
+        $(function () {
+        var available = [];{% for cmd in listeCommande %}available.push({"id": {{ cmd["id"] }}, "label":"{{ cmd["id"] }}-{{ cmd["numComande"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}", "value":"{{ cmd["id"] }}-{{ cmd["numComande"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}"});{% endfor %}
+        $("#idCommande").autocomplete({
+        source: available,
+        appendTo: "#listeCommande",
+        classes: {
+        "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+        }
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+        return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+        };
+        });
+        $(function () {
+        var available = [];{% for cmd in listeCommande %}available.push({"id": {{ cmd["id"] }}, "label":"{{ cmd["id"] }}-{{ cmd["numfacture"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}", "value":"{{ cmd["id"] }}-{{ cmd["numfacture"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}"});{% endfor %}
+        $("#idFacture").autocomplete({
+        source: available,
+        appendTo: "#listeFacture",
+        classes: {
+        "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+        }
+        }).data("ui-autocomplete")._renderItem = function (ul, item) {
+        return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+        };
+        });
+	</script>
+{% endblock %}

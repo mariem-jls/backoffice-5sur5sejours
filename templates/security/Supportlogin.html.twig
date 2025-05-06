@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {{ include('partials/title-meta.html.twig', {title: 'Log In'}) }}
+
+        {{ include('partials/head-css.html.twig') }}
+
+    </head>
+
+    <body class="authentication-bg authentication-bg-pattern">
+
+        <div class="account-pages my-5">
+            <div class="container">
+
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6 col-xl-4">
+                        <div class="text-center">   
+                          <a href="">
+                                <img src="/images/logo.png" alt="" height="22" class="mx-auto">
+                            </a>
+                            <p class="text-muted mt-2 mb-4">Espace Support</p>
+
+                        </div>
+                        <div class="card">
+                            <div class="card-body p-4">
+                                
+                                <div class="text-center mb-4">
+                                    <h4 class="text-uppercase mt-0">Connexion</h4>
+                                </div>
+
+                                <form method="POST" action="{{ path('app_back_Support') }}">
+                                    <div class="mb-3">
+                                        <label for="emailaddress" class="form-label">Adresse e-mail</label>
+                                        <input class="form-control" name="email" type="email" id="emailaddress" required="" placeholder="Enter your email">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="password" class="form-label">Mot de passe</label>
+                                        <input class="form-control" name="password" type="password" required="" id="password" placeholder="Enter your password">
+                                    </div>
+
+                                    <input type="hidden" name="_csrf_token"
+           value="{{ csrf_token('authenticate') }}"
+    >
+
+                                    <div class="mb-3 d-grid text-center">
+                                        <button class="btn btn-primary text-uppercase" type="submit"> Connexion </button>
+                                    </div>
+                                </form>
+
+                            </div> <!-- end card-body -->
+                        </div>
+                        <!-- end card -->
+
+                        <div class="row mt-3">
+                            <div class="col-12 text-center">
+                            </div> <!-- end col -->
+                        </div>
+                        <!-- end row -->
+
+                    </div> <!-- end col -->
+                </div>
+                <!-- end row -->
+            </div>
+            <!-- end container -->
+        </div>
+        <!-- end page -->
+
+        {{ include('partials/vendor.html.twig') }}
+
+        <!-- App js -->
+        <script src="/js/app.min.js"></script>
+        
+    </body>
+</html>

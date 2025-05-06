@@ -1,0 +1,181 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Advanced Plugins
+{% endblock %}
+
+{% block css %}
+	<!-- Plugins css -->
+	<link href="/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Ajouter Utilisateur' }) }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+
+				<div class="card-body col-md-6">
+					<h4 class="mt-0 header-title">Créer un nouvel utilisteur et l'ajouter à ce site</h4>
+					<hr>
+					<form method="POST" id="mainForm" action="{{ path('user_new') }}" >
+
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">Identifiant (nécessaire)</label>
+							<div class="col-sm-7">
+								<input type="text" name="username" id="identifiant" class="form-control" >
+								<div class="invalid-feedback trn" style="display:none" id="idMessage">Ce champ est obligatoire!*</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">Adresse messagerie (nécessaire)</label>
+							<div class="col-sm-7">
+								<input type="email" name="email" id="adresse" class="form-control">
+								<div class="invalid-feedback trn" style="display:none" id="addresseMessage">Ce champ est obligatoire!*</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">Prénom</label>
+							<div class="col-sm-7">
+								<input type="text" name="prenom" id="prenom" class="form-control">
+								<div class="invalid-feedback trn" style="display:none" id="prenomMessage">Ce champ est obligatoire!*</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">Nom</label>
+							<div class="col-sm-7">
+								<input type="text" name="nom" id="nom" class="form-control">
+								<div class="invalid-feedback trn" style="display:none" id="nomMessage">Ce champ est obligatoire!*</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">Site web</label>
+							<div class="col-sm-7">
+								<input type="text" name="site" id="site" class="form-control">
+								<div class="invalid-feedback trn" style="display:none" id="siteMessage">Ce champ est obligatoire!*</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">Mot de passe</label>
+							<div class="col-sm-7">
+								<input type="Password" name="password" id="password" class="form-control">
+								<div class="invalid-feedback trn" style="display:none" id="passwordMessage">Ce champ est obligatoire!*</div>
+							</div>
+						</div>
+
+						<div class="form-group row mb-3">
+							<label class="col-sm-4 col-form-label">Rôle</label>
+							<div class="col-sm-7">
+								<select id="inputRole" name="roles" class="form-control">
+									<option value="ROLE_ADMIN">Administrateur</option>
+									<option value="ROLE_SUPPORT">SUPPORT</option>
+									<option value="ROLE_PARTENAIRE">Partenaire</option>
+								</select>
+								<div class="invalid-feedback trn" style="display:none" id="rolesMessage">Ce champ est obligatoire!*</div>
+							</div>
+						</div>
+
+						<button type="button" onclick="ajouterNouveauUtilisateur()" class="btn btn-primary">
+							Ajouter un Utilisateur
+						</button>
+
+					</form>
+
+				</div>
+				<!-- end card-body -->
+			</div>
+			<!-- end card-->
+		</div>
+		<!-- end col -->
+	</div>
+	<!-- end row -->
+
+
+{% endblock %}
+
+{% block javascript %}
+	<script src="/libs/selectize/js/standalone/selectize.min.js"></script>
+	<script src="/libs/mohithg-switchery/switchery.min.js"></script>
+	<script src="/libs/multiselect/js/jquery.multi-select.js"></script>
+	<script src="/libs/select2/js/select2.min.js"></script>
+	<script src="/libs/jquery-mockjax/jquery.mockjax.min.js"></script>
+	<script src="/libs/devbridge-autocomplete/jquery.autocomplete.min.js"></script>
+	<script src="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+	<script src="/libs/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+
+	<!-- Init js-->
+	<script src="/js/pages/form-advanced.init.js"></script>
+	<script>
+		function ajouterNouveauUtilisateur() {
+			// Get form elements
+			var identifiant = document.getElementById('identifiant');
+			var adresse = document.getElementById('adresse');
+			var prenom = document.getElementById('prenom');
+			var nom = document.getElementById('nom');
+			var site = document.getElementById('site');
+			var password = document.getElementById('password');
+			var inputRole = document.getElementById('inputRole');
+			console.log(inputRole.value, identifiant.value, adresse.value, prenom.value, nom.value, site.value, password.value);
+
+			// Validation flags
+			var valid = true;
+
+			// Clear previous validation messages
+			document.getElementById('idMessage').style.display = 'none';
+			document.getElementById('addresseMessage').style.display = 'none';
+			document.getElementById('prenomMessage').style.display = 'none';
+			document.getElementById('nomMessage').style.display = 'none';
+			document.getElementById('siteMessage').style.display = 'none';
+			document.getElementById('passwordMessage').style.display = 'none';
+			document.getElementById('rolesMessage').style.display = 'none';
+
+			// Check each field
+			if (!identifiant.value.trim()) {
+				document.getElementById('idMessage').style.display = 'block';
+				valid = false;
+			}
+			if (!adresse.value.trim()) {
+				document.getElementById('addresseMessage').style.display = 'block';
+				valid = false;
+			}
+			if (!prenom.value.trim()) {
+				document.getElementById('prenomMessage').style.display = 'block';
+				valid = false;
+			}
+			if (!nom.value.trim()) {
+				document.getElementById('nomMessage').style.display = 'block';
+				valid = false;
+			}
+			if (!site.value.trim()) {
+				document.getElementById('siteMessage').style.display = 'block';
+				valid = false;
+			}
+			if (!password.value.trim()) {
+				document.getElementById('passwordMessage').style.display = 'block';
+				valid = false;
+			}
+			if (!inputRole.value.trim()) {
+				document.getElementById('rolesMessage').style.display = 'block';
+				valid = false;
+			}
+
+			// If all fields are valid, submit the form
+			if (valid) {
+				document.getElementById('mainForm').submit();
+			}
+		}
+
+	</script>
+{% endblock %}

@@ -1,0 +1,26 @@
+
+{% for produit in pagination %}
+    <div class="col-md-3 mb-4">
+        <div class="card">
+            {% set firstPhoto = produit.attachements|first %}
+            {% if firstPhoto and firstPhoto.idAttachement %}
+                {# <a href="{{ path('produits_show', {id: produit.id}) }}"> #}
+                    <img src="{{ asset('public/images/produits/' ~ firstPhoto.idAttachement.path) }}" alt="{{ firstPhoto.idAttachement.path }}" onclick="showdetail({{ produit.id }})">
+                {# </a> #}
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a href="{{ path('produits_show', {id: produit.id}) }}">
+                        {{ produit.labeletype }}
+                    </a>
+                </h5>
+            </div>
+        </div>
+    </div>
+{% endfor %}
+<script>
+    function showdetail(id) {
+        console.log(id);
+        window.location.href = "/produits/" + id;
+    }
+</script>

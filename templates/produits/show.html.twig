@@ -1,0 +1,355 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Advanced Plugins
+{% endblock %}
+
+{% block css %}
+	<!-- Plugins css -->
+	<link href="/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<style>
+		.carousel-item img {
+			max-height: 500px;
+			object-fit: cover;
+		}
+
+		.img-thumbnail {
+			cursor: pointer;
+			margin-bottom: 10px;
+		}
+
+		.img-thumbnail.active {
+			border: 2px solid #007bff;
+		}
+
+		.produit__details-additional-info {
+			margin-top: 30px;
+		}
+
+		.section-space-medium-top {
+			margin-top: 40px;
+		}
+
+		.produit__details-more-tab {
+			margin-right: 15px;
+		}
+
+		.nav-tabs {}
+
+		.nav-link {
+			border: 1px solid #dee2e6;
+			border-radius: 0.25rem;
+			color: #495057;
+			padding: 10px 15px;
+			background-color: #f8f9fa;
+		}
+
+		.nav-link:hover {
+			border-color: #dee2e6;
+			background-color: #e9ecef;
+		}
+
+		.nav-link.active {
+			color: #495057;
+			background-color: #fff;
+			border-color: #dee2e6;
+		}
+
+		.tab-content {
+			padding: 15px 15px 15px 10px;
+			border: 1px solid #dee2e6;
+			background-color: #fff; /* Small padding from left side */
+		}
+
+		.produit__details-des p,
+		.produit__details-info {
+			font-size: 16px;
+			line-height: 1.5;
+			color: #6c757d;
+			margin-bottom: 0;
+		}
+
+		.produit__details-des p {
+			margin-bottom: 10px;
+		}
+
+		@media(max-width: 767.98px) {
+			.produit__details-additional-info {
+				margin-top: 20px;
+			}
+
+			.section-space-medium-top {
+				margin-top: 20px;
+			}
+
+			.produit__details-more-tab {
+				margin-right: 0;
+			}
+
+			.nav-link {
+				padding: 8px 10px;
+			}
+
+			.tab-content {
+				padding: 10px 10px 10px 8px; /* Adjust padding for mobile */
+			}
+
+			.produit__details-des p,
+			.produit__details-info {
+				font-size: 14px;
+			}
+		}
+
+		 .action-buttons {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center;
+		}
+
+		.action-buttons .btn {
+			margin-right: 10px;
+		}
+
+		
+
+		.formProduits {
+        padding-left: 15px;
+        border-top: 1px solid gray;
+		}
+		.formProduitsConditionnement {
+			padding-left: 15px;
+		}
+		.labelO {
+			font-size: 12px;
+		}
+		.iconFormProduits {
+			width: 20px;
+			height: 20px;
+		}
+	</style>
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Advanced Form' }) }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<div class="action-buttons d-flex justify-content-end align-items-center">
+						<div class="publier d-flex align-items-center">
+							<div class="form-check form-switch me-1">
+								<input type='checkbox' onclick="publierProduit('{{ produit.id }}')" {% if produit.statut=="publier" %} checked {% endif %} class="form-check-input" name="sms" id="smsInput{{ produit.id }}"/>
+								<label class="form-check-label" for="smsInput{{ produit.id }}"></label>
+							</div>
+							<span class="me-2">Publier</span>
+						</div>
+						<a href="{{ path('produits_edit', {'id': produit.id}) }}" class="btn btn-success me-2">
+						  <i class="fa fa-pen"> </i> Modifier
+						</a>
+						<button class="btn btn-danger me-2" id="delete-button">
+							<i class="fa fa-trash"> </i> Supprimer
+						</button>
+
+					</div>
+
+
+					{# {{ dump(produit) }} #}
+					<div
+						class="row">
+						<!-- Image Carousel -->
+						<div class="col-xxl-6 col-lg-6">
+							<div id="produitCarousel" class="carousel slide" data-bs-ride="carousel">
+								<div class="carousel-inner">
+									{% for photo in produit.attachements %}
+										<div class="carousel-item {% if loop.first %}active{% endif %}">
+											<img src="{{ asset('images/produits/' ~ photo.idAttachement.path) }}" class="d-block w-100" alt="{{ produit.labeletype }}">
+										</div>
+									{% endfor %}
+
+								</div>
+								<button class="carousel-control-prev" type="button" data-bs-target="#produitCarousel" data-bs-slide="prev">
+									<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Previous</span>
+								</button>
+								<button class="carousel-control-next" type="button" data-bs-target="#produitCarousel" data-bs-slide="next">
+									<span class="carousel-control-next-icon" aria-hidden="true"></span>
+									<span class="visually-hidden">Next</span>
+								</button>
+							</div>
+							<!-- Thumbnails -->
+							<div class="mt-3">
+								<div class="row">
+									{% for photo in produit.attachements %}
+										<div class="col-2">
+											<img src="{{ asset('images/produits/' ~ photo.idAttachement.path) }}" class="img-thumbnail" data-bs-target="#produitCarousel" data-bs-slide-to="{{ loop.index0 }}" alt="{{ produit.labeletype }}">
+										</div>
+									{% endfor %}
+								</div>
+							</div>
+						</div>
+
+						<!-- Product Information -->
+						<div class="col-xxl-6 col-lg-6 px-5">
+							<h3>{{ produit.labeletype }}</h3>
+							<span class="new-price">${{ produit.traif }}</span>							
+							<p>{{ produit.description }}</p>
+
+							<div class="form-group formProduits">
+                        <div class="form-inline">
+                            <i class="fa-solid fa-info"></i>&nbsp;
+                            <label class="col-form-label produitlabel"
+                                style="font-family:'Montserrat-Bold';font-size:13px;" for="caractProduit">
+                                Caractéristiques produit </label>
+                        </div>
+                        <div class="inputpadding" id="prodCarat">
+                            {% if produit.description %} {{produit.description|nl2br}} {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group formProduits">
+                        <div class="form-inline">
+                            <i class="fa-solid fa-thumbs-up"></i>&nbsp;
+                            <label class="col-form-label produitlabel"
+                                style="font-family:'Montserrat-Bold';font-size:13px;"> Les plus produit</label>
+                        </div>
+                        <div class="inputpadding" id="prodDelais">
+                            {{ produit.plusDescription|nl2br  }}
+                        </div>
+                    </div>
+                    <div class="form-group formProduits">
+                        <div class="form-inline">
+                            <i class="fa-solid fa-hand-holding-dollar"></i>&nbsp;
+                            <label class="col-form-label produitlabel"
+                                style="font-family:'Montserrat-Bold';font-size:13px;" for="traifProduit"> Tarif & Frais
+                                de port </label>
+                        </div>
+                        <div class="inputpadding" id="prodTarif">
+                            {{ produit.tarifs|nl2br  }}
+                        </div>
+                    </div>
+						</div>
+
+						
+					</div>
+
+
+				</div>
+
+				<script>
+					document.getElementById('delete-button').addEventListener('click', function () {
+						Swal.fire({
+							title: 'Êtes-vous sûr?',
+							text: "Vous ne pourrez pas annuler cette action!",
+							icon: 'warning',
+							showCancelButton: true,
+							confirmButtonColor: '#3085d6',
+							cancelButtonColor: '#d33',
+							confirmButtonText: 'Oui, supprime-le !',
+							cancelButtonText: 'Non'
+						}).then((result) => {
+							if (result.isConfirmed) {
+								// Get the form action (URL) from the form's action attribute
+								const form = document.getElementById('delete-form');
+								const action = form.action;
+								
+								fetch(action, {
+									method: 'POST',
+									headers: {
+										'Content-Type': 'application/x-www-form-urlencoded',
+									},
+									body: new URLSearchParams(new FormData(form))
+								}).then(response => {
+									if (response.ok) {
+										Swal.fire(
+											'Deleted!',
+											'Votre produit a été supprimé.',
+											'success'
+										).then(() => {
+											// Optionally, redirect or update the UI after successful deletion
+											window.location.href = '/produits'; // Replace with the desired path
+										});
+									} else {
+										Swal.fire(
+											"Erreur!",
+											"Une erreur s'est produite lors de la suppression de votre produit.",
+											"error"
+										);
+									}
+								}).catch(error => {
+									console.error('Error:', error);
+									Swal.fire(
+										"Erreur!",
+											"Une erreur s'est produite lors de la suppression de votre produit.",
+											"error"
+									);
+								});
+							}
+						});
+					});
+				</script>
+
+
+				<form id="delete-form" method="post" action="{{ path('produits_delete', {'id': produit.id}) }}" style="display: none;">
+					<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ produit.id) }}">
+				</form>
+
+
+			</div>
+			<!-- end card-body -->
+		</div>
+		<!-- end card-->
+	</div>
+	<!-- end col -->
+</div>
+<!-- end row -->
+{% endblock %}
+{% block javascript %}
+<script src="/libs/selectize/js/standalone/selectize.min.js"></script>
+<script src="/js/carousel-thumbnails.js"></script>
+<script src="/libs/mohithg-switchery/switchery.min.js"></script>
+<script src="/libs/multiselect/js/jquery.multi-select.js"></script>
+<script src="/libs/select2/js/select2.min.js"></script>
+<script src="/libs/jquery-mockjax/jquery.mockjax.min.js"></script>
+<script src="/libs/devbridge-autocomplete/jquery.autocomplete.min.js"></script>
+<script src="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+<script src="/libs/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz4fnFO9gybBogGzC0LBYSt4D+Kwg9UUYQ9/ntMOeFMpjt6K6Zrm9Lo7Ay" crossorigin="anonymous"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!-- Init js-->
+{# <script src="/js/pages/form-advanced.init.js"></script> #}
+<script>
+	var path ="{{ path('PublierTypeProduit') }}"
+function publierProduit($id) {
+var statut = "depublier";
+if ($("#smsInput" + $id).is(':checked')) {
+statut = "publier";
+}
+$_data = {
+'id': $id,
+'statut': statut
+}
+console.log("data", $_data);
+$.ajax({
+type: "POST",
+url: path,
+data: $_data,
+success: function (response) {
+console.log("response", response);
+if (response["statut"] == "publier") {
+Swal.fire({type: 'success', title: 'Le produit a été publié avec succès!'});
+} else {
+Swal.fire({type: 'success', title: 'Le produit a été dépublié avec succès!'});
+}
+/*location.reload();*/
+}
+});
+}
+</script>{% endblock %}

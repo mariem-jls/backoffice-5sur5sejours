@@ -1,0 +1,363 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Ajouter Produit
+{% endblock %}
+
+{% block css %}
+	<!-- Plugins css -->
+	<link href="/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css"/>
+	<link rel="stylesheet" href="/css/produits.css" type="text/css"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.css">
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Ajouter Produit' }) }}
+{% endblock %}
+
+{% block body %}
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-header">
+				<legend class="legendProduit" style="font-family:'Montserrat-Regular';font-size:18px;">
+					Ajouter Produit
+				</legend>
+				</div>
+				<div class="card-body">
+					<div class="row no-margin bg-white" id="formProduit" style="min-height:100vh">
+						<form id="addProductForm" class="col-md-8">
+						
+							<div
+								class="form-inline" id="groupNomProduit">
+								{#                <h2 id="textNomProduit"style="font-family:'Montserrat-Bold'; font-size: 18px;">Nom du produit</h2>#}
+								<input type="text" value="" id="labeletype"  name="labeletype" required placeholder="Nom du produit" class="form-control" style="border:1px solid gray">
+								&nbsp;
+								<div class="invalid-feedback trn" style="display:none" id="nomMessage">Ce champs est obligatoire!*</div>
+							</div>
+							
+							<div class="form-group formProduits">
+								<div class="form-inline">
+									<img class="iconFormProduits" src="{{('/images/SVG/5sur5-caracteristiques.svg')}}">&nbsp;
+									<label class="col-form-label produitlabel" style="font-family:'Montserrat-Bold';font-size:13px;" for="caracteristiques">
+										Caractéristiques produit
+									</label>
+								</div>
+								<div class="inputpadding">
+									<textarea class="form-control  inputProduit" id="caracteristiques" name="caracteristiques" required></textarea>
+									<div class="invalid-feedback trn" style="display:none" id="caractMessage">Ce champs est obligatoire!*</div>
+								</div>
+							</div>
+							<br>
+							<div class="form-group formProduits">
+								<div class="form-inline">
+									<img class="iconFormProduits" src="{{ asset('images/LesPlus5sur5.svg')}}">&nbsp;
+									<label class="col-form-label produitlabel" style="font-family:'Montserrat-Bold';font-size:13px;" for="delais">
+										Les plus produit</label>
+								</div>
+								<div class="inputpadding">
+									<textarea class="form-control  inputProduit" id="delais" name="delais" required></textarea>
+									<div class="invalid-feedback trn" style="display:none" id="plusProduitMessage">Ce champs est obligatoire!*</div>
+								</div>
+							</div>
+							<br>
+							<div class="form-group formProduits">
+								<div class="form-inline">
+									<img class="iconFormProduits" src="{{('/images/SVG/5sur5-tarifs.svg')}}">&nbsp;
+									<label for="tarifs" class="col-form-label produitlabel" style="font-family:'Montserrat-Bold';font-size:13px;">
+										Tarif & Frais de port</label>
+								</div>
+								<div class="inputpadding">
+									<textarea class="form-control  inputProduit" id="tarifs" name="tarifs" required></textarea>
+									<div class="invalid-feedback trn" style="display:none" id="tarifsFraisPortMessage">Ce champs est obligatoire!*
+									</div>
+								</div>
+								<div class="form-inline inputpadding" style="margin-bottom: 10px">
+									<div class="col-sm-4">
+										<div class="input-group">
+											<label class="col-sm-12 labelO">Reversement</label>
+											<input style="border:1px solid #F09E7A;" type="text" id="reversement" value="0" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control">
+											<div class="input-group-append">
+												<span style="background-color:#F09E7A;color: white;" class="input-group-text">%</span>
+											</div>
+										</div>
+									</div>
+									<div class="invalid-feedback">Reversement is required.</div>
+								</div>
+							</div>	
+							
+							<div class="form-group">
+								<label for="statut">Status</label>
+								<select class="form-control" id="statut" name="statut" required>
+									<option value="publier">publier</option>
+									<option value="">non publier</option>
+								</select>
+								<div class="invalid-feedback">Status is required.</div>
+							</div>
+							<br>
+							
+							<div class="form-group">
+								<label for="attachments">Attachments (Photos)</label>
+								<input type="file" class="form-control" id="attachments" name="attachments[]" multiple required>
+								<div class="invalid-feedback">Please upload at least one attachment.</div>
+								<div id="attachments-preview" class="mt-3"></div>
+							</div>
+							<div id="conditionnements">
+								<h4>Type Produit Conditionnements</h4>
+								<button type="button" class="btn btn-secondary" id="addConditionnement">Add Conditionnement</button>
+							</div>
+							<div class="form-inline" style="border-top: 1px solid black;margin-top: 30px;">
+								<h3 style="font-family:'Montserrat-Regular';font-size:18px;">Conditionnement</h3>
+								<button type="button" style="width:210px;position: relative;bottom:30px;left:35%" id="ajouterCondition" class="btn ret" onclick="appendNewCondition(2);">
+									Ajouter conditionnement
+								</button>
+							</div>
+							<div class="form-group formProduitsConditionnement" style="margin-top: 15px;padding-top: 10px;">
+								<div class="form-inline">
+									<label for="conditionnementType0">Sous titre</label>
+									<input type="text" class="form-control" id="conditionnementType0" name="conditionnements[0][type]" required>
+									<div class="invalid-feedback">Ce champs est obligatoire!*</div>
+								</div>
+								<div class="form-inline">
+									<label for="descriptionCommande0">Description conditionnement</label>
+									<textarea  class="form-control inputProduit" id="descriptionCommande0" name="conditionnements[0][descriptionCommande]" required></textarea>
+									<div class="invalid-feedback">Ce champs est obligatoire!*</div>
+								</div>
+							</div>
+							<br>
+							<div class="row inputpadding">
+								<div class="col-sm-4">
+									<div class="input-group">
+										<label class="col-sm-12 labelO">Montant HT</label>
+										<input style="border:1px solid #F09E7A;" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" id="MontantHt1" class="form-control">
+										<div class="input-group-append">
+											<span style="background-color:#F09E7A;color: white;" class="input-group-text">€</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="input-group">
+										<label class="col-sm-12 labelO">TVA
+										</label>
+										<input style="border:1px solid #F09E7A;" type="text" id="tva1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control">
+										<div class="input-group-append">
+											<span style="background-color:#F09E7A;color: white;" class="input-group-text">%</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<br>
+							<div class="row inputpadding" style="margin-bottom: 10px">
+								<div class="col-sm-4">
+									<div class="input-group">
+										<label class="col-sm-12 labelO">Poids du contenant</label>
+										<input style="border:1px solid #F09E7A;" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" id="poidsContenant1" class="form-control">
+										<div class="input-group-append">
+											<span style="background-color:#F09E7A;color: white;" class="input-group-text">g</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="input-group">
+										<label class="col-sm-12 labelO">Poids du produit</label>
+										<input style="border:1px solid #F09E7A;" type="text" id="poidsProduit1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control">
+										<div class="input-group-append">
+											<span style="background-color:#F09E7A;color: white;" class="input-group-text">g</span>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4">
+									<div class="input-group">
+										<label class="col-sm-12 labelO">Pochette d'envoie</label>
+										<input style="border:1px solid #F09E7A;" type="text" id="pochetteEnvoi1" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control">
+										<div class="input-group-append">
+											<span style="background-color:#F09E7A;color: white;" class="input-group-text">g</span>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="form-inline" style="border-top:1px solid gray;padding-top: 5px;">
+								<label class="col-form-label produitlabel" style="font-family:'Montserrat-Bold';font-size:13px;" for="caractProduit">
+									Photos conditionnement
+								</label>
+							</div>
+								
+							<div
+								class="form-inline" style="padding-top: 25px;">	
+								<input type="file" class="form-control" id="conditionnementAttachments0" name="conditionnements[0][attachments][]" multiple>
+								<div class="invalid-feedback">Please upload at least one attachment.</div>
+								<div id="conditionnementAttachments-preview0" class="mt-3"></div>
+								<button type="button" class="btn btn-danger mt-2 removeConditionnement">Remove Conditionnement</button>
+							</div>
+
+							<button type="submit" class="btn btn-primary mt-3">Submit</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascript %} <script src="/libs/selectize/js/standalone/selectize.min.js"></script>
+	 <script src="/libs/mohithg-switchery/switchery.min.js"></script>
+	 <script src="/libs/multiselect/js/jquery.multi-select.js"></script>
+	 <script src="/libs/select2/js/select2.min.js"></script>
+	 <script src="/libs/devbridge-autocomplete/jquery.autocomplete.min.js"></script>
+	 <script src="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+	 <script src="/libs/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+	 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	 <script>
+		$(document).ready(function () {
+			let conditionnementIndex = 1; // Start from 1 because we have a default conditionnement with index 0
+
+			function addConditionnement() {
+				const conditionnementHtml = `
+					<div class="form-group conditionnement" data-index="${conditionnementIndex}">
+						<h5>Conditionnement ${conditionnementIndex + 1}</h5>
+						<label for="conditionnementType${conditionnementIndex}">Type</label>
+						<input type="text" class="form-control" id="conditionnementType${conditionnementIndex}" name="conditionnements[${conditionnementIndex}][type]" required>
+						<div class="invalid-feedback">Type is required.</div>
+						<label for="descriptionCommande${conditionnementIndex}">Description Commande</label>
+						<textarea class="form-control" id="descriptionCommande${conditionnementIndex}" name="conditionnements[${conditionnementIndex}][descriptionCommande]" required></textarea>
+						<div class="invalid-feedback">Description Commande is required.</div>
+						<label for="montantHT${conditionnementIndex}">Montant HT</label>
+						<input type="number" step="0.01" class="form-control" id="montantHT${conditionnementIndex}" name="conditionnements[${conditionnementIndex}][montantHT]" required>
+						<div class="invalid-feedback">Montant HT is required.</div>
+						<label for="montantTTC${conditionnementIndex}">Montant TTC</label>
+						<input type="number" step="0.01" class="form-control" id="montantTTC${conditionnementIndex}" name="conditionnements[${conditionnementIndex}][montantTTC]" required>
+						<div class="invalid-feedback">Montant TTC is required.</div>
+						
+						<div class="form-inline inputpadding" style="margin-bottom: 10px">
+							<div class="col-sm-4">
+								<div class="input-group">
+									<label class="col-sm-12 labelO" for="poidsContenant${conditionnementIndex}">Poids du contenant</label>
+									<input style="border:1px solid #F09E7A;" type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" id="poidsContenant${conditionnementIndex}" class="form-control" name="conditionnements[${conditionnementIndex}][poidsContenant]" required>
+									<div class="input-group-append">
+										<span style="background-color:#F09E7A;color: white;" class="input-group-text">g</span>
+									</div>
+									<div class="invalid-feedback">Poids du contenant is required.</div>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="input-group">
+									<label class="col-sm-12 labelO" for="poidsProduit${conditionnementIndex}">Poids du produit</label>
+									<input style="border:1px solid #F09E7A;" type="text" id="poidsProduit${conditionnementIndex}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="conditionnements[${conditionnementIndex}][poidsProduit]" required>
+									<div class="input-group-append">
+										<span style="background-color:#F09E7A;color: white;" class="input-group-text">g</span>
+									</div>
+									<div class="invalid-feedback">Poids du produit is required.</div>
+								</div>
+							</div>
+							<div class="col-sm-4">
+								<div class="input-group">
+									<label class="col-sm-12 labelO" for="pochetteEnvoi${conditionnementIndex}">Pochette d'envoie</label>
+									<input style="border:1px solid #F09E7A;" type="text" id="pochetteEnvoi${conditionnementIndex}" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');" class="form-control" name="conditionnements[${conditionnementIndex}][pochetteEnvoi]" required>
+									<div class="input-group-append">
+										<span style="background-color:#F09E7A;color: white;" class="input-group-text">g</span>
+									</div>
+									<div class="invalid-feedback">Pochette d'envoie is required.</div>
+								</div>
+							</div>
+						</div>
+						
+						<label for="conditionnementAttachments${conditionnementIndex}">Attachments</label>
+						<input type="file" class="form-control" id="conditionnementAttachments${conditionnementIndex}" name="conditionnements[${conditionnementIndex}][attachments][]" multiple required>
+						<div class="invalid-feedback">Please upload at least one attachment.</div>
+						<div id="conditionnementAttachments-preview${conditionnementIndex}" class="mt-3"></div>
+						<button type="button" class="btn btn-danger mt-2 removeConditionnement">Remove Conditionnement</button>
+					</div>`;
+				$('#conditionnements').append(conditionnementHtml);
+				conditionnementIndex++;
+			}
+
+			$('#addConditionnement').on('click', addConditionnement);
+
+			$(document).on('click', '.removeConditionnement', function () {
+				$(this).closest('.conditionnement').remove();
+			});
+
+			function previewAttachments(input, previewContainerId) {
+				const previewContainer = $(`#${previewContainerId}`);
+				previewContainer.html('');
+				if (input.files) {
+					$.each(input.files, function (i, file) {
+						const reader = new FileReader();
+						reader.onload = function (e) {
+							const imgElement = `<img src="${e.target.result}" class="img-thumbnail m-1" style="max-width: 150px; max-height: 150px;">`;
+							previewContainer.append(imgElement);
+						}
+						reader.readAsDataURL(file);
+					});
+				}
+			}
+
+			$(document).on('change', 'input[id^="conditionnementAttachments"]', function () {
+				const previewContainerId = $(this).attr('id') + '-preview';
+				previewAttachments(this, previewContainerId);
+			});
+
+			$('#attachments').on('change', function () {
+				previewAttachments(this, 'attachments-preview');
+			});
+
+			$('#addProductForm').on('submit', function (event) {
+				event.preventDefault();
+
+				let isValid = true;
+
+				$(this).find('input, textarea').each(function () {
+					if (!this.checkValidity()) {
+						isValid = false;
+						$(this).addClass('is-invalid');
+					} else {
+						$(this).removeClass('is-invalid');
+					}
+				});
+
+				if (isValid) {
+					console.log('Form is valid and ready to be processed.');
+
+					const formData = new FormData($('#addProductForm')[0]);
+
+					let conditionnements = [];
+					$('.conditionnement').each(function () {
+						let index = $(this).data('index');
+						conditionnements.push({
+							type: $(`#conditionnementType${index}`).val(),
+							descriptionCommande: $(`#descriptionCommande${index}`).val(),
+							montantHT: $(`#montantHT${index}`).val(),
+							montantTTC: $(`#montantTTC${index}`).val(),
+							poidsContenant: $(`#poidsContenant${index}`).val(),
+							poidsProduit: $(`#poidsProduit${index}`).val(),
+							pochetteEnvoi: $(`#pochetteEnvoi${index}`).val()
+						});
+					});
+					formData.append('conditionnements', JSON.stringify(conditionnements));
+
+					$.ajax({
+						url: 'new',
+						type: 'POST',
+						data: formData,
+						processData: false,
+						contentType: false,
+						success: function (response) {
+							console.log('Form submitted successfully:', response);
+							window.location.href = '{{ path('produits_index') }}';
+						},
+						error: function (jqXHR, textStatus, errorThrown) {
+							console.error('Error submitting form:', textStatus, errorThrown);
+						}
+					});
+				} else {
+					console.error('Please fill all required fields correctly.');
+				}
+			});
+		});		
+	 </script>
+{% endblock %}

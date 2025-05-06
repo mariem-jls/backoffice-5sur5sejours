@@ -1,0 +1,819 @@
+{% extends "Admin/LayoutAdmin.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/jquery-ui.css'}}" >
+    <link rel="stylesheet" href="{{ '/Plugins/css/daterangepicker.min.css' }}">
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/acceuil.css'}}" >
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/c3.css'}}" >
+    <style>
+        .ui-progressbar {
+            position: relative;
+        }
+        .progress-label {
+            position: absolute;
+            left: 3%;
+            top: 4px;
+            font-weight: bold;
+        }
+        .contenuCal {
+            position: absolute;
+            text-align: center;
+            max-width: 100%;
+            width: 100%;
+        }
+        .inputState {
+            width: 100%;
+            height: 35px;
+            font-family: 'Montserrat-Regular';
+            font-size: 15px;
+            margin: 0;
+            border: 1px solid #495057;
+            outline: none !important;
+            box-shadow: none !important;
+        }
+        .date-picker-wrapper{
+            position: relative;
+            left: 0 !important;
+            top: 0 !important;
+            width: 100%;
+        }
+        .date-picker-wrapper .month-wrapper table {
+            float: none;
+            width: 100%;
+        }
+        .date-picker-wrapper .drp_top-bar{
+            display: none;
+        }
+    </style>
+{% endblock %}
+{% block Content %}
+    <div class=" row HEADER no-margin">
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1 "></div>
+        <div class="col-xl-11 col-lg-11 col-md-11 col-sm-11 col-xs-11 ">
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 ">
+                    <h3 class="titre" > Statistique / Vue d'ensemble </h3>
+                    {#<input type="text" placeholder="Depuis jj/mm/yyyy" id="inputState" class="Custum form-control">#}
+                    <div class="col-6 col-md-6 col-ms-6 col-sm-6 col-lg-6 col-xl-6 col-xs-6 no-padding  divCalendrier">
+                        <input type="text" placeholder="Choisir une durée" id="inputState" class="Custum form-control hasDatepicker inputState" >
+                        <input type="hidden" id="dateDebut">
+                        <input type="hidden" id="dateFin">
+                        <div class="contenuCal">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 ">
+                    <ul class="navbar-nav mr-auto right ">
+                        <li class="nav-item ColMenu1 ColParent" style='background-color: #41A2AA !important;color: white !important;display: none'>
+                            <a class="nav-link" onclick="location.href = '{{path('NewDashboardAdmin')}}';" style='color: white !important;'> Statistiques</a>
+                        </li>
+                    </ul>
+                    <div class="row no-margin divSearch1" style="float:right;display:none">
+                        <input class="SearchSejour" placeholder="Recherche"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1"></div>
+    </div>
+    <div class="row HEADER2 no-margin">
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1 "></div>
+        <div class="col-xl-11 col-lg-11 col-md-11 col-sm-11 col-sx-11 ">
+            {#1 ere row #}
+            <div class="row">
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 statsej">
+                    <h5 class="soustitre"> Nombre de codes séjours créés </h5>
+                    {#1 ere chart #}
+                    <div class="card">
+                        <div id="chart1"></div>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 repart" style="text-align: center;">
+                    <h5 class="soustitre"> Répartition E, PA, CE </h5>
+                    <p class="petitText">Dont actifs </p>
+                    {#2 eme chart #}
+                    <div class="card2">
+                        <div id="chart2"></div>
+                        <div id="chart10"></div>
+                        <div id="chart11"></div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding tabsej" style="display: none;">
+                    <table class="table" >
+                        <tbody>
+                        <tr>
+                            <td >Nombre de Codes Séjours </td>
+                            <th id="listeSejourB" > {{Nbecolegr1 + NbPartenairegr1 + CSEgr1}}</th>
+                        </tr>
+                        <tr>
+                            <td scope="row">Nombre de Séjour actifs </td>
+                            <th id="ListeSejour">{{Nbecole + NbPartenaire + CSE}}</th>
+                        </tr>
+                        <tr>
+                            <td scope="row">Nombre de connexions </td>
+                            <th id="Nbcnnx">{{Nbcnnx}}</th>
+                        </tr>
+                        <tr>
+                            <td scope="row">Montant HT vente de produits </td>
+                            <th id="Nbmnt">{{Nbmnt|number_format(2)}}  € </th>
+                        </tr>
+                        <tr>
+                            {% set diffrence =  Nbmnt-NBmthrevesm %}
+                            <td scope="row" style="width:43%">Montant HT vente de produits Hors reversements  </td>
+                            <th id="NBmth"> {{diffrence|number_format(2) }}   € </th>
+                        </tr>
+                        <tr>
+                            <td scope="row">Montant HT  reversements  </td>
+                            <th id="NBmthrevesm">{{NBmthrevesm|number_format(2)}}  € </th>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            {#2eme row #}
+            <div class="row  HEADER4">
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 head4">
+                    <h5 class="soustitre">Taux de transformation par typologie de client  </h5>
+                    {#6 ere chart #}
+                    <div class="card2">
+                        <div  id="chart6"></div>
+                        <div  id="chart16"></div>
+                        <div  id="chart26"></div>
+                    </div>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding head5" style="margin-left: -7px;">
+                    <h5 class="soustitre">  Panier moyen  </h5>
+                    {#7eme chart #}
+                    <table class="tablepanier">
+                        <tbody>
+                        <tr>
+                            <td  class="right-td"> Ecoles/Autres    </td>
+                            <td> <img src="{{('/images/icon.svg')}}" ></td>
+                            <td>  <h4 id="panierecole"> {{panierecole|round}} €  </h4>  </td>
+                            <td style="width: 20%;" >  <div class="progress panierecole"  style="width :{{grandecol}}% ">
+                                    <div class="progress-bar pinkcolor " role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div></td>
+                        </tr>
+                        <tr>
+                            <td class="right-td">   Partenaires  </td>
+                            <td> <img src="{{('/images/icon.svg')}}" ></td>
+                            <td> <h4 id ="panierpart"> {{panierpart|round}} €  </h4> </td>
+                            <td style="width: 20%;" ><div class="progress panierpart"  style="width :{{grandpa}}% ">
+                                    <div class="progress-bar  vertcolor" role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: -webkit-right;">  CSE  </td>
+                            <td> <img src="{{('/images/icon.svg')}}" ></td>
+                            <td> <h4 id="paniercse"> {{paniercse|round}}  € </h4> </td>
+                            <td style="width: 20%;" > <div class="progress paniercse"  style="width :{{grandce}}%">
+                                    <div class="progress-bar bleucolor " role="progressbar" style="width: 100%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100" ></div>
+                                </div></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 no-padding produit">
+                    <div class="row"id="ProduitEnOrdreDeVente" >
+                        <h5 class="soustitre">  Produits en ordre de vente   </h5>
+                        <div class="col-xl-7 col-lg-7 col-md-7 col-sm-7 col-xs-7 no-padding" >
+                            {#<div class="space"> </div>#}
+                            {#{% if typeProduitplusvendu|length != 0 %}#}
+                                {#{% for  siz in typeProduitplusvendu|sort((a, b) => b.mesproduits|length <=> a.mesproduits|length) %}#}
+                                    {#{% if siz.labeletype =="Connexion" %}#}
+                                        {#<div class=" Barproduit">#}
+                                            {#<div class="progress-bar" role="progressbar" style="width:  100%  ">{{Nbcnnx}}</div>#}
+                                        {#</div>#}
+                                        {#<div class="space"> </div>#}
+                                    {#{% endif %}#}
+                                {#{% endfor %}#}
+                                {#{% for  siz in typeProduitplusvendu|sort((a, b) => b.mesproduits|length <=> a.mesproduits|length) %}#}
+                                    {#{% if siz.labeletype !="Connexion" %}#}
+                                        {#{{ dump(typeProduitplusvendu|sort((a, b) => b.mesproduits|length <=> a.mesproduits|length) |first)}}#}
+                                        {#<div class=" Barproduit">#}
+                                            {#<div class="progress-bar" role="progressbar" style="width:    {% if siz==typeProduitplusvendu|sort((a, b) => b.mesproduits|length <=> a.mesproduits|length) |first %} {%set first=siz%}  90%{%else%}{%if siz.mesproduits|length !=0%} {%set x=(siz.mesproduits|length /((siz.mesproduits|length)+1)) * 90%}{%else%}{%set x=0%}{%endif%} {{x}}% {%endif%};" aria-valuenow="200" aria-valuemin="0" aria-valuemax="100">{{siz.mesproduits|length}}</div>#}
+                                        {#</div>#}
+                                        {#<div class="space"> </div>#}
+                                    {#{% endif %}#}
+                                {#{% endfor %}#}
+                            {#{% endif %}#}
+                            {% if typeProduitplusvendu|length != 0 %}
+                                {% for t in tableauContientTypeProduitsPlusVente %}
+                                        <div class=" Barproduit">
+                                            <div class="progress-bar" role="progressbar" style="width: {% if loop.index==1 %} 90% {% else %}{{ (t.nbVente)/(t.nbVente+1)*90  }}%{% endif %}" aria-valuenow="200" aria-valuemin="0" aria-valuemax="100">{{ t.nbVente}}</div>
+                                        </div>
+                                        <div class="space"> </div>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 " style="padding-top :8px">
+                            {% for t in tableauContientTypeProduitsPlusVente %}
+                                    <h6 class="bartitle"> {{t.nomProduit}} </h6>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {#3 eme  row #}
+            <div class="HEADER3" >
+                <h5 class="soustitre1"> Pages consultées par typologie de client </h5>
+                <div class=" row col-xl-11 col-lg-11 col-md-11 col-sm-11 col-sx-11 stat3" align="center">
+                    <div class="col-xl-2 col-lg-2 col-md-2 col-sm-2 col-xs-2 no-padding"> </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 " style="padding-top: 36px;">
+                        <h5 class="soustitle" align="center"> PHOTOS </h5>
+                        {#3 ere chart #}
+                        <div id="chart3"></div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 " style="padding-top: 36px;">
+                        <h5   class="soustitle"  align="center"> MESSAGES </h5>
+                        {#4 eme chart #}
+                        <div id="chart4"></div>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 " style="padding-top: 36px;">
+                        <h5  class="soustitle"  align="center"> CARTES </h5>
+                        {#5eme chart #}
+                        <div id="chart5"></div>
+                    </div>
+                    <div class="col-xl-1 col-lg-1 col-md-1 col-sm-1 col-xs-1 no-padding"> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{'/Plugins/js/c3.js'}}"></script>
+    <script src="{{'/Plugins/js/d3.v3.min.js'}}"></script>
+    <script src="{{'/Plugins/js/jquery-us.js'}}"></script>
+    <script src="{{ '/Plugins/js/moment.js' }}"></script>
+    <script src="{{ '/Plugins/js/jquery.daterangepicker.min.js' }}"></script>
+    <script>
+        {#$(function () {#}
+        {#// $("#inputState").datepicker({dateFormat: 'dd/mm/yy'});#}
+        {# Calendrier du filtre   #}
+        {##}
+        {#});#}
+        $('#inputState').dateRangePicker({
+            singleMonth: true,
+            language: 'fr',
+            container: '.contenuCal',
+            opens: 'center',
+            getValue: function () {
+                if ($('#date-debut').val() && $('#date-fin').val())
+                    return $('#date-debut').val() + $('#date-fin').val();
+                else
+                    return '';
+            },
+            setValue: function (s, s1, s2) {
+                $('#dateDebut').val(s1);
+                $('#dateFin').val(s2);
+                $('#inputState').val('Du ' + s1 + ' au ' + s2);
+                changeStat(s1,s2);
+            }
+        });
+        var chart1 = c3.generate({
+            bindto: '#chart1',
+            data: {
+                columns: [
+                    ['Ecoles/Autres',{{Nbecolegr1}} ],
+                    ['Partenaires',{{NbPartenairegr1}} ],
+                    ['CSE', {{CSEgr1}}],
+                ],
+                type: 'donut',
+                onclick: function (d, i) {
+                    console.log("onclick", d, i);
+                },
+                onmouseover: function (d, i) {
+                    console.log("onmouseover", d, i);
+                },
+                onmouseout: function (d, i) {
+                    console.log("onmouseout", d, i);
+                },
+                colors: {
+                    'Ecoles/Autres': '#ffcbaf',
+                    'Partenaires': '#C5E697',
+                    'CSE': '#bcd6ff',
+                }
+            },
+            donut: {
+                width: 40,
+                title: {{Nbecolegr1 + NbPartenairegr1 + CSEgr1}},
+                label: {
+                    format: function (value) {
+                        return value;
+                    }
+                }
+            },
+            legend: {hide: true}
+        });
+    </script>
+    <script>
+    </script>
+    <script>
+        var chart2 = c3.generate({
+            bindto: '#chart2',
+            size: {
+                height: 350,
+                width: 140
+            },
+            data: {
+                x: 'x',
+                grid: {
+                    focus: {
+                        show: false
+                    }},
+                columns: [
+                    ['x', 'Ecoles/Autres '],
+                    ['data1', {{Nbecole}}],
+                    ['data2', {{Nbecolegr1}}],
+                ],
+                groups: [
+                    ['data1', 'data2']
+                ],
+                colors: {
+                    data1: '#F09E7A',
+                    data2: 'rgba(240, 158, 122 ,0.36)',
+                },
+                type: 'bar',
+                bar: {
+                },
+                labels: true
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]
+                }
+            },
+            tooltip: {
+                show: false},
+            axis: {
+                x: {
+                    type: "category",
+                    width: 20
+                },
+                y: {
+                    show: false,
+                }
+            },
+            legend: {hide: true}
+        });
+    </script>
+    <script>
+        var chart10 = c3.generate({
+            bindto: '#chart10',
+            size: {
+                height: 350,
+                width: 140
+            },
+            data: {
+                x: 'x',
+                grid: {
+                    focus: {
+                        show: false
+                    }},
+                columns: [
+                    ['x', 'Partenaire'],
+                    ['data1', {{NbPartenaire}}],
+                    ['data2', {{NbPartenairegr1}}],
+                ],
+                colors: {
+                    data1: '#C5E697',
+                    data2: 'rgba(197,230,151,0.56  )',
+                },
+                groups: [
+                    ['data1', 'data2']
+                ],
+                type: 'bar',
+                labels: true
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]
+                }
+            }, tooltip: {
+                show: false},
+            axis: {
+                x: {
+                    type: "category",
+                    width: 20
+                },
+                y: {
+                    show: false,
+                }
+            },
+            legend: {hide: true}
+        });
+    </script>
+    <script>
+        var chart11 = c3.generate({
+            size: {
+                height: 350,
+                width: 140
+            },
+            bindto: '#chart11',
+            data: {
+                x: 'x',
+                grid: {
+                    focus: {
+                        show: false
+                    }},
+                columns: [
+                    ['x', 'CSE'],
+                    ['data1', {{CSE}}],
+                    ['data2', {{CSEgr1}}],
+                ],
+                colors: {
+                    data2: 'rgba(188, 214, 255,0.36)',
+                    data1: '#BCD6FF',
+                },
+                groups: [
+                    ['data1', 'data2']
+                ],
+                type: 'bar',
+                labels: true
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]
+                }
+            }, tooltip: {
+                show: false},
+            axis: {
+                x: {
+                    type: "category",
+                    width: 20
+                },
+                y: {
+                    show: false,
+                }
+            },
+            legend: {hide: true}
+        });
+    </script>
+    <script>
+        var chart3 = c3.generate({
+            bindto: '#chart3',
+            data: {
+                columns: [
+                    ['Ecoles/Autres', {{ecolephoto}}],
+                    ['Partenaires', {{partphoto}}],
+                    ['CSE',{{cseephoto}} ],
+                ],
+                type: 'donut',
+                onclick: function (d, i) {
+                    console.log("onclick", d, i);
+                },
+                onmouseover: function (d, i) {
+                    console.log("onmouseover", d, i);
+                },
+                onmouseout: function (d, i) {
+                    console.log("onmouseout", d, i);
+                },
+                colors: {
+                    'Ecoles/Autres': '#ffcbaf',
+                    'Partenaires': '#C5E697',
+                    'CSE': '#bcd6ff',
+                }
+            },
+            donut: {
+                width: 40,
+                label: {
+                    format: function (value) {
+                        return value;
+                    }
+                }
+            },
+            legend: {hide: true}
+        });
+    </script>
+    <script>
+        var chart4 = c3.generate({
+            bindto: '#chart4',
+            data: {
+                columns: [
+                    ['Ecoles/Autres',{{ecolem}} ],
+                    ['Partenaires',{{partmssg}} ],
+                    ['CSE',{{cseem}} ],
+                ],
+                type: 'donut',
+                onclick: function (d, i) {
+                    console.log("onclick", d, i);
+                },
+                onmouseover: function (d, i) {
+                    console.log("onmouseover", d, i);
+                },
+                onmouseout: function (d, i) {
+                    console.log("onmouseout", d, i);
+                },
+                colors: {
+                    'Ecoles/Autres': '#ffcbaf',
+                    'Partenaires': '#C5E697',
+                    'CSE': '#bcd6ff',
+                }
+            },
+            donut: {
+                width: 40,
+                label: {
+                    format: function (value) {
+                        return value;
+                    }
+                }
+            },
+            legend: {hide: true}
+        });
+    </script>
+    <script>
+        var chart5 = c3.generate({
+            bindto: '#chart5',
+            data: {
+                columns: [
+                    ['Ecoles/Autres', {{ecolecart}}],
+                    ['Partenaires', {{partcart}}],
+                    ['CSE',{{csecart}} ],
+                ],
+                type: 'donut',
+                onclick: function (d, i) {
+                    console.log("onclick", d, i);
+                },
+                onmouseover: function (d, i) {
+                    console.log("onmouseover", d, i);
+                },
+                onmouseout: function (d, i) {
+                    console.log("onmouseout", d, i);
+                },
+                colors: {
+                    'Ecoles/Autres': '#ffcbaf',
+                    'Partenaires': '#C5E697',
+                    'CSE': '#bcd6ff',
+                }
+            },
+            donut: {
+                width: 40,
+                label: {
+                    format: function (value) {
+                        return value;
+                    }
+                }
+            },
+            legend: {hide: true}
+        });
+    </script>
+    <script>
+        var chart6 = c3.generate({
+            bindto: '#chart6',
+            size: {
+                height: 350,
+                width: 140
+            },
+            data: {
+                x:'x',
+                grid:{
+                    focus:{
+                        show:true
+                    }},
+                columns: [
+                    ['x','Ecoles/Autres '],
+                    ['NBr_Connexion', {{NBcomandxecole}}],
+                    ['Nb_Connexion_payant', {{NBcnnxecole}}],
+                    ['Nb_personnes_commandes', {{NBpersone_comandecole}}],
+                ],
+                groups: [
+                    ['NBr_Connexion'], ['Nb_Connexion_payant'],['Nb_personnes_commandes']
+                ],
+                colors: {
+                    NBr_Connexion: 'rgba(240, 158, 122 ,0.36)',
+                    Nb_Connexion_payant: '#F09E7A',
+                    Nb_personnes_commandes:'#610303'
+                },
+                type: 'bar',
+                bar:{
+                },
+                labels: true
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]
+                }
+            },
+            tooltip: {
+                show: true},
+            axis:{
+                x:{
+                    type:"category",
+                    width:20
+                },
+                y:{
+                    show:false,
+                }
+            },
+            legend: { hide: true }
+        });
+    </script>
+    <script>
+        var chart16 = c3.generate({
+            bindto: '#chart16',
+            size: {
+                height: 350,
+                width: 140
+            },
+            data: {
+                x:'x',
+                grid:{
+                    focus:{
+                        show:false
+                    }},
+                columns: [
+                    ['x','Partenaire'],
+                    ['NBr_Connexion', {{NBcomandpart}}],
+                    ['Nb_Connexion_payant', {{NBcnnxpart}}],
+                    ['Nb_personnes_commandes', {{NBpersone_comandePart}}],
+                ],
+                colors: {
+                    NBr_Connexion: 'rgba(197,230,151,0.56  )',
+                    Nb_Connexion_payant:'#C5E697',
+                    Nb_personnes_commandes: '#02520B',
+                },
+                groups: [
+                    ['NBr_Connexion'],[ 'Nb_Connexion_payant'],['Nb_personnes_commandes']
+                ],
+                type: 'bar',
+                labels: true
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]
+                }
+            },tooltip: {
+                show: true},
+            axis:{
+                x:{
+                    type:"category",
+                    width:20
+                },
+                y:{
+                    show:false,
+                }
+            },
+            legend: { hide: true }
+        });
+    </script>
+    <script>
+        var chart26 = c3.generate({
+            size: {
+                height: 350,
+                width: 140
+            },
+            bindto: '#chart26',
+            data: {
+                x:'x',
+                grid:{
+                    focus:{
+                        show:false
+                    }},
+                columns: [
+                    ['x','CSE'],
+                    ['NBr_Connexion', {{NBcomandcse}}],
+                    ['Nb_Connexion_payant', {{NBcnnxcse}}],
+                    ['Nb_personnes_commandes', {{NBpersone_comandeCse}}],
+                ],
+                colors: {
+                    NBr_Connexion: 'rgba(188, 214, 255,0.36)',
+                    Nb_Connexion_payant: '#BCD6FF',
+                    Nb_personnes_commandes: "#020D57",
+                },
+                groups: [
+                    ['NBr_Connexion'], ['Nb_Connexion_payant'],['Nb_personnes_commandes']
+                ],
+                type: 'bar',
+                labels: true,
+            },
+            grid: {
+                y: {
+                    lines: [{value: 0}]
+                }
+            },tooltip: {
+                show: true},
+            axis:{
+                x:{
+                    type:"category",
+                    width:20
+                },
+                y:{
+                    show:false,
+                }
+            },
+            legend: { hide: true }
+        });
+        filtreDate='{{ path('AccueilJson') }}'
+        function changeStat(s1,s2){
+            data={"dateDebut":s1,
+                "dateFin":s2}
+            $.ajax({
+                type: "POST",
+                url: filtreDate,
+                data: data,
+                success: function (response) {
+                    console.log(response);
+                    chart1.load({
+                        columns: [
+                            ['Ecoles/Autres',response['Nbecolegr1'] ],
+                            ['Partenaires',response['NbPartenairegr1'] ],
+                            ['CSE', response['CSEgr1']],
+                        ]});
+                    d3.select('#chart1 .c3-chart-arcs-title').node().innerHTML = response["listeSejourB"];
+                    chart2.load({
+                        columns: [
+                            ['x','Ecoles/Autres '],
+                            ['data1', response['Nbecole']],
+                            ['data2', response['Nbecolegr1']],
+                        ]});
+                    chart10.load({
+                        columns: [
+                            ['x','Partenaire'],
+                            ['data1', response['NbPartenaire']],
+                            ['data2', response['NbPartenairegr1']],
+                        ]});
+                    chart11.load({
+                        columns: [
+                            ['x','CSE'],
+                            ['data1', response['CSE']],
+                            ['data2', response['CSEgr1']],
+                        ]});
+                    chart3.load({
+                        columns: [
+                            ['Ecoles/Autres', response['ecolephoto']],
+                            ['Partenaires', response['partphoto']],
+                            ['CSE',response['cseephoto'] ],
+                        ]});
+                    chart4.load({
+                        columns: [
+                            ['Ecoles/Autres',response['ecolem'] ],
+                            ['Partenaires',response['partmssg'] ],
+                            ['CSE',response['cseem'] ],
+                        ]});
+                    chart5.load({
+                        columns: [
+                            ['Ecoles/Autres', response['ecolecart']],
+                            ['Partenaires', response['partcart']],
+                            ['CSE',response['csecart']],
+                        ]});
+                    chart6.load({
+                        columns: [
+                            ['x','Ecoles/Autres '],
+                            ['NBr_Connexion', response['NBcomandxecole']],
+                            ['Nb_Connexion_payant', response['NBcnnxecole']],
+                            ['Nb_personnes_commandes', response['NBpersone_comandeCse']],
+                        ]});
+                    chart16.load({
+                        columns: [
+                            ['x','Partenaire'],
+                            ['NBr_Connexion', response['NBcomandpart']],
+                            ['Nb_Connexion_payant', response['NBcnnxpart']],
+                            ['Nb_personnes_commandes', response['NBpersone_comandePart']],
+                            // ['data2',2],
+                        ]});
+                    chart26.load({
+                        columns: [
+                            ['x','CSE'],
+                            ['NBr_Connexion', response['NBcomandcse']],
+                            ['Nb_Connexion_payant', response['NBcnnxcse']],
+                            ['Nb_personnes_commandes', response['NBpersone_comandeCse']],
+                        ]});
+                    $("#listeSejourB").html(response["listeSejourB"])
+                    $("#ListeSejour").html(response["ListeSejour"])
+                    $("#Nbcnnx").html(response["Nbcnnx"])
+                    $("#Nbmnt").html(response["Nbmnt"]+'€' )
+                    $("#NBmth").html(response["NBmth"]+'€' )
+                    $("#NBmthrevesm").html(response["NBmthrevesm"]+'€' )
+                    $("#panierecole").html(Math.round(response["panierecole"])+'€' )
+                    $("#panierpart").html(Math.round(response["panierpart"])+'€' )
+                    $("#paniercse").html(Math.round(response["paniercse"])+'€' )
+                    $(".progress.panierecole").css("width",Math.round(response["panierecole"]));
+                    $(".progress.panierpart").css("width",Math.round(response["panierpart"]));
+                    $(".progress.paniercse").css("width",Math.round(response["paniercse"]));
+                $('#ProduitEnOrdreDeVente').empty();
+                console.log(response["tableauContientTypeProduitsPlusVente"].length);
+                    console.log(response["tableauContientTypeProduitsPlusVente"]);
+                $row="";
+                $row+="    <h5 class=\"soustitre\">  Produits en ordre de vente   </h5>" +
+                    "                        <div class=\"col-xl-7 col-lg-7 col-md-7 col-sm-7 col-xs-7 no-padding\" >";
+                $length={{ typeProduitplusvendu|length }};
+                for($i=1;$i<$length;$i++)
+                {
+                    $row+="<div class=\" Barproduit\">" +
+                        "                                            <div class=\"progress-bar\" role=\"progressbar\" style=\"width: 90%\" aria-valuenow=\"200\" aria-valuemin=\"0\" aria-valuemax=\"100\">"+response["tableauContientTypeProduitsPlusVente"][$i].nbVente +"</div>" +
+                        "                                        </div>" +
+                        "                                        <div class=\"space\"> </div>"
+                }
+                $row+="</div>" ;
+                  $row+=  "                        <div class=\"col-xl-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 \" style=\"padding-top :8px\">\n" ;
+                    for($i=0;$i<$length;$i++) {
+                        $row += "                                    <h6 class=\"bartitle\"> " + response["tableauContientTypeProduitsPlusVente"][$i].nomProduit + " </h6>" ;
+                    }
+                   $row+= "                        </div>"
+                    $('#ProduitEnOrdreDeVente').append($row);
+                }
+            })
+        }
+    </script>
+{% endblock %}

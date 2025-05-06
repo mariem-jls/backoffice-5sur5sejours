@@ -1,0 +1,106 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}
+	Profile
+{% endblock %}
+
+{% block css %}
+	<!-- Plugins css -->
+	<link href="/css/profile.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Profile' }) }}
+{% endblock %}
+
+{% block body %}
+	<div class="row" id="profile">
+		<div class="col-xl-6 col-md-6">
+			<div class="card">
+				<div class="text-center card-body">
+					
+					<div>
+
+						<div class="text-start">
+								<form action="{{ path('modifierprofile') }}" method="post">
+									<div class="nom">
+										<h6>Nom</h6>
+										<input type="text" class="form-control" name="nom" value="{{ profil.nom }}"  id="nom">
+									</div>
+									<div class="prenom">
+										<h6>Prénom</h6>
+										<input type="text" class="form-control" name="prenom" value="{{ profil.prenom }}"  id="prenom">
+									</div>
+									<div class="prenom">
+										<h6>Email</h6>
+										<input type="text" class="form-control" name="email" value="{{ profil.email }}"  id="email" disabled>
+									</div>
+									<div class="adress">
+										<h6>Adresse</h6>
+										<input type="text" class="form-control" name="adresse" value="{{ profil.adresse }}"  id="adresse">
+									</div>
+									<div class="num">
+										<h6>Numéro de téléphone</h6>
+										<input type="text" class="form-control masktelph" name="phone" value="{{ profil.numMobile }}"  id="phone">
+									</div>
+									<div class="stat">
+										<h6>Statut</h6>
+										<select class="form-control" name="statut"  id="statut">
+											<option value="5">Activer</option>
+											<option value="10">Désactiver</option>
+										</select>
+									</div>
+									<div class="row d-flex mt-3">
+										<button type="submit" class="btn btn-primary">Enregistrer</button>
+										<a href="{{ path('profile') }}" class="btn btn-success ml-2">Retour</a>
+									</div>
+								</form>
+						</div>
+
+
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<script>
+		$pathmodif ='{{ path('modifierprofile') }}';
+		function modifprofil() {
+			var nom = $('#nom').val();
+			var prenom = $('#prenom').val();
+			var password = $('#password').val();
+			var adresse = $('#adresse').val();
+			var phone = $('#phone').val();
+			var value = $('#statut').val();
+			console.log(nom);
+			console.log(prenom);
+			console.log(password);
+			console.log(adresse);
+			console.log(phone);
+			console.log(value);
+			$_data = {
+				'nom': nom,
+				'prenom': prenom,
+				'password': password,
+				'adresse': adresse,
+				'phone': phone,
+				'statut': value
+			}
+			console.log($_data);
+			$.ajax({
+				type: "POST",
+				url: $pathmodif,
+				data: $_data,
+				success: function () {
+					location.href = "{{ path('profile') }}";
+				// location.reload();
+				}
+			});
+		}
+	</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+# config/packages/knp_paginator.yaml
+knp_paginator:
+    page_range: 5                        # Number of pages in the sliding pagination
+    default_options:
+        page_name: page                  # Page parameter name
+        sort_field_name: sort            # Sort field parameter name
+        sort_direction_name: direction   # Sort direction parameter name
+        distinct: true                   # Ensure distinct results, recommended
+    template:
+        pagination: '@KnpPaginator/Pagination/bootstrap_v5_pagination.html.twig'     # Pagination view
+        sortable: '@KnpPaginator/Pagination/sortable_link.html.twig'                 # Sortable link view

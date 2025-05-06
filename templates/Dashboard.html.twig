@@ -1,0 +1,927 @@
+{% extends "Admin/LayoutAdmin.html.twig" %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/jquery-ui.css'}}" >
+    <link rel="stylesheet" href="{{ '/Plugins/css/daterangepicker.min.css' }}">
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/acceuil.css'}}" >
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/c3.css'}}" >
+    <link  type="text/css"  rel="stylesheet" href="{{'/css/DashboardAdmin.css'}}" >
+    <style>
+    .detailsGratuit{
+        font-size:12px;
+    }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+{% endblock %}
+{% block body %}
+    <button data-target="#ModalDuree" data-toggle="modal" data-backdrop="static" data-keyboard="false" style='display: none;' id='btnModalDuree'></button>
+    <div id="ModalDuree" class="modal fade" role="dialog" style="background-color: rgba(112, 112, 112, 0.56);z-index: 1000000;" aria-hidden="true">
+        <div class="modal-dialog dialogUploadImg dialogNotifRandom" style='max-width: 550px !important;'>
+            <div class="row modal-content no-margin contentdialogUploadImg contentdialogNotifMsg">
+                <div class="headerdialogUploadImg">
+                    <h1 class="titledialogUploadImg titledialogNotifMsg"> Choisir une durée 
+                        <i class="fa fa-times iconeClose" aria-hidden="true" data-dismiss='modal'></i>
+                    </h1>
+                </div>
+                <div class="ContenudetailsSejour">
+                    <div class="row no-margin detailsSejour">
+                        <div class="ContentUpload">
+                            <input type="text" placeholder="Choisissez une durée" autocomplete="off" id="inputState" class="Custum form-control hasDatepicker inputState" style="display: none;">
+                            <input type="hidden" id="dateDebut">
+                            <input type="hidden" id="dateFin">
+                            <div class="contenuCal">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="BottomUploadImg BottomdialogNotifMsg">
+                        <button class="circle btnNotifRandom btnAnnulerDuree" data-dismiss="modal">Annuler</button>
+                        <button class='circle btnNotifRandom disabledbtn' data-dismiss='modal' onclick='changeCourbes();' id="validDuree">Valider</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ parent() }}
+{% endblock %}
+{% block Content %}
+    {%set nbPart = ListePart|length%}
+    <div class="row no-margin contentDash">
+        <div class="row no-margin listeFiltreDash">
+            <h1 class="titlesDash titleFiltre">Recherche / Filtres</h1>
+            <div class="col-3 col-lg-3 col-md-3 col-sm-3 col-xs-3 col-sm-3 col-xl-3 ContenuFiltre filtreCode">
+                <h1 class="titleFiltr"> Partenaires (<span class="nbrPart" id="nbrPart"> {{nbPart}} </span>)</h1>
+                <input id="idpart" value="" type="hidden" />
+                <div class="divsearchEtab dropdown" id="divsearchEtab">
+                    <input type="text" autocomplete="off" id="inputSearchEtab" class="dropdown-toggle btn inputSearchEtab" data-toggle="dropdown" placeholder="Choisissez un partenaire">
+                    <div class="dropdown-menu dropdown dropEtab" id="dropEtab">
+                        {% for etablissement in ListePart %}
+                            <a class="dropdown-item liEtab" href="javascript:void(0)" id='{{ etablissement.getId() }}' data-input="{{ etablissement.getNometab() }}"
+                               data-val='{{ etablissement.getId() }}' onclick="choosePart('{{etablissement.id}}', '{{ etablissement.getNometab() }}');">{{ etablissement.getNometab() }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-2 col-lg-2 col-md-2 col-sm-2 col-xs-2 col-sm-2 col-xl-2 ContenuFiltre filtreCode">
+                <h1 class="titleFiltr"> Type établissement</h1>
+                <input id="valfiltretype" value="" type="hidden" />
+                <select class="selectFiltre selectPart" id="selectType" onchange="changeFiltreType();">
+                    <option value=""> Tous </option>
+                    <option value="PARTENAIRES/VOYAGISTES"> Partenaire </option>
+                    <option value="ECOLES/AUTRES"> Ecole </option>
+                    <option value="CSE"> CSE </option>
+                </select>
+            </div>
+            <div class="col-3 col-md-3 col-ms-3 col-sm-3 col-lg-3 col-xl-3 col-xs-3 right divFiltreDuree">
+                <h1 class="titleFiltr"> Durée</h1>
+                <input id="valfiltreduree" value="" type="hidden" />
+                <select class="selectFiltre selectDuree" id="selectDuree"  onchange="changeFiltreDuree($(this).val());" >
+                    <option value="Ce mois" > Ce mois</option>
+                    <option value="Le mois dernier"> Le mois dernier </option>
+                    <option value="Cette année" > Cette année </option>
+                    <option value="L'année dernière"> L'année dernière </option>
+                    <option value="duree"  > Choisir une durée</option>
+                </select>
+            </div>
+            <div class="col-3 col-md-3 col-ms-3 col-sm-3 col-lg-3 col-xl-3 col-xs-3 right divComparerA">
+                <h1 class="titleFiltr"> Comparer par rapport à :</h1>
+                <input id="valfiltrecompar" value="" type="hidden" />
+                <select class="selectFiltre selectDuree" id="selectCompare" onchange="changeFiltreTypeCompar();">
+                    <option value="perPreced"> La période précédente</option>
+                    <option value="perAnnePre"> La même période l'année précédente </option>
+                </select>
+            </div>
+        </div>
+        <div class="row no-margin ContenuFirstDash" >
+            <div class="row no-margin ContenuDash">
+                <div class="row no-margin ContenuDetailsDash ContenuTodayDash" >
+                    <h1 class="titlesDash titleContenuDash" id='datedonnees'> Ce mois </h1>  
+                    <div class="row no-margin ContenuDetailsDash ContentTodayDash" >
+                        <div class="row no-margin ContenuDetailsDash ContentTodayDash SousContentTodayDash" >
+                            <div class="col-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 col-sm-4 col-xl-4 no-padding divnbrStat ">
+                                <div class="divExportStat ">
+                                    <a class="lienFactPdf" href="{{path('ExportCAxlsx')}}" target="_blank">
+                                        <i class="fa fa-file-excel-o iconeExportData" aria-hidden="true" title="exportet sous forme xl" ></i>
+                                    </a>
+                                    <a class="lienFactPdf" href="{{path('PageGraphe',{'type': 'Chiffre_D_Affaires'}) }}" target="_blank">
+                                        <i class="fa fa-line-chart iconeExportData" aria-hidden="true" title="Afficher sous forme de graphe"></i>
+                                    </a>
+                                </div>
+                                <h2 class="titleNbrStatinit"> Chiffre d'affaires  ( <span id="tauxCA" class="spanTaux spanTauxCA">{{tauxCa|round(2,'ceil')}}</span> € )</h2>
+                                <div class="row no-margin divDetails divDetails2">
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails1">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat5">
+                                            <span><span id="caCnx">{{caConnexions['cacnxtotal']|round(2,'ceil')}}€</span> HT</span><span class="titreNbrStat"> Connexions</span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentCaCnx >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntCaCnx"> +{{pourcentCaCnx|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntCaCnx"> {{pourcentCaCnx|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="caCnxLast">{{caConnexionsLast['cacnxtotal']|round(2,'ceil')}}</span>€ HT CA cnx) </span></span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails2">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span><span id="caCnxPay">{{caConnexions['cacnxPay']|round(2,'ceil')}}€</span> HT</span><span class="titreNbrStat"> Payantes </span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentCaCnxPay >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntCaCnxPay"> +{{pourcentCaCnxPay|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntCaCnxPay"> {{pourcentCaCnxPay|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="caCnxPayLast">{{caConnexionsLast['cacnxPay']|round(2,'ceil')}}</span>€ HT CA cnx payantes) </span></span>
+                                        </h2>
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span><span id="caCnxFree">{{caConnexions['cacnxfree']|round(2,'ceil')}}€</span> HT</span><span class="titreNbrStat"> Gratuites</span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentCaCnxFree >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntCaCnxFree"> +{{pourcentCaCnxFree|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntCaCnxFree"> {{pourcentCaCnxFree|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="caCnxFreeLast">{{caConnexionsLast['cacnxfree']|round(2,'ceil')}}</span>€ HT CA cnx gratuites) </span></span>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div class="row no-margin divDetails divDetails2">
+                                    <h2 class="titreNbrStat titreNbrStat2 titreNbrStat8">
+                                        <span><span id="cdProd">{{ caProduits|round(2,'ceil')}}€</span> HT</span><span class="titreNbrStat"> Produits</span>
+                                        <span class="detailsCompar">
+                                            {%if pourcentCaProd >= 0 %}    
+                                                <span class="SpanPorcent SpanPorcentPos" id="prcntCaProd"> +{{pourcentCaProd|round(2,'ceil')}}% </span>
+                                            {%else%}
+                                                <span class="SpanPorcent SpanPorcentNeg" id="prcntCaProd"> {{pourcentCaProd|round(2,'ceil')}}% </span>
+                                            {%endif%}
+                                            <span class="SpanDetailsPourcent"> (<span id="cdProdLast">{{ caProduitsLast|round(2,'ceil')}}</span>€ HT CA prod) </span></span>
+                                    </h2>
+                                    <h2 class="titreNbrStat titreNbrStat2 titreNbrStat8">
+                                        <span><span id="caPanieMoy">{{ PanierMoyen|round(2,'ceil') }}€</span> HT</span><span class="titreNbrStat"> Panier moyen</span>
+                                        <span class="detailsCompar">
+                                            {%if pourcentCaPan >= 0 %}    
+                                                <span class="SpanPorcent SpanPorcentPos" id="prcntCaPan"> +{{pourcentCaPan|round(2,'ceil')}}% </span>
+                                            {%else%}
+                                                <span class="SpanPorcent SpanPorcentNeg" id="prcntCaPan"> {{pourcentCaPan|round(2,'ceil')}}% </span>
+                                            {%endif%}
+                                            <span class="SpanDetailsPourcent"> (<span id="caPanieMoyLast">{{ PanierMoyenLast|round(2,'ceil') }}</span>€ HT panier moyen) </span></span>
+                                    </h2>
+                                </div>
+                                <div class="row no-margin divDetails divDetails2" style="border: none;">
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails1">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat5">
+                                            <span><span id="caRevTot">-{{reversementTotal|round(2,'ceil')}}€</span> HT</span><span class="titreNbrStat"> Réversement</span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentCaRev >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntCaRevTot"> +{{pourcentCaRev|round(2,'ceil')}}% </span>   
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntCaRevTot"> {{pourcentCaRev|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="caRevTotLast">-{{reversementTotalLast|round(2,'ceil')}}</span>€ HT réversement) </span></span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails2">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span><span id="caRevCnx">-{{caConnexions['reverCnx']|round(2,'ceil')}}€</span> HT</span><span class="titreNbrStat"> Connexions</span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentCaRevCnx >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntCaRevCnx"> +{{pourcentCaRevCnx|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntCaRevCnx"> {{pourcentCaRevCnx|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="caRevCnxLast">-{{caConnexionsLast['reverCnx']|round(2,'ceil')}}</span>€ HT réversement cnx) </span></span>
+                                        </h2>
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span><span id="caRevProd">-{{reversementProduit|round(2,'ceil')}}€</span> HT</span><span class="titreNbrStat"> Produits</span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentCaRevProd >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntCaRevProd"> +{{pourcentCaRevProd|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntCaRevProd"> {{pourcentCaRevProd|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="caRevProdLast">-{{reversementProduitLast|round(2,'ceil')}}</span>€ HT réversement prod) </span></span>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 col-sm-4 col-xl-4 no-padding divnbrStat ">
+                                <div class="divExportStat ">
+                                    <a class="lienFactPdf" href="{{path('ExportSejourXlsx')}}" target="_blank">
+                                        <i class="fa fa-file-excel-o iconeExportData" aria-hidden="true" title="exportet sous forme xl" ></i>
+                                    </a>
+                                    <a class="lienFactPdf" href="{{path('PageGraphe',{'type': 'Sejours'}) }}" target="_blank">
+                                        <i class="fa fa-line-chart iconeExportData" aria-hidden="true" title="Afficher sous forme de graphe"></i>
+                                    </a>
+                                </div>
+                                <h2 class="titleNbrStatinit"> Séjours ( <span id="tauxSej" class="spanTaux spanTauxSej">{{tauxSej|round(2,'ceil')}}</span> % )</h2>
+                                <div class="row no-margin divDetails divDetails2">
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails1">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat5">
+                                            <span id="SejCrees">{{sejourCrees|length}}</span><span class="titreNbrStat"> Créés </span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentCreer >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffCreer"> +{{pourcentCreer|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffCreer"> {{pourcentCreer|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="nbLastcreer">{{sejourCreesLast|length}}</span> crées) </span></span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails2">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span id="totsejencourPay">{{sejourEncourPayent}}</span><span class="titreNbrStat"> Payants </span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentEncourPay >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffCreerPay"> +{{pourcentEncourPay|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffCreerPay"> {{pourcentEncourPay|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="nbLastcreerpay">{{sejourEncourPayentLast}}</span> payants) </span></span>
+                                        </h2> 
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span id="totsejencourfree">{{sejourEncourFree}}</span><span class="titreNbrStat"> Gratuits </span>
+                                           <br><b class="detailsGratuit" id="totsejencourfreeEF"> EF({{sejourEncourFree_EF}})</b><br>
+                                           <b class="detailsGratuit" id="totsejencourfreePF"> PF({{sejourEncourFree_PF}})</b><br>
+                                            <span class="detailsCompar">
+                                                {%if pourcentEncourFree >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffCreerFree"> +{{pourcentEncourFree|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffCreerFree"> {{pourcentEncourFree|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="nbLastcreerfree">{{sejourEncourFreeLast}}</span> gratuits) </span></span>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <div class="row no-margin divDetails divDetails2">
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails1">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat5">
+                                            <span id="SejActif">{{sejourEncourHaveAttach|length}}</span><span class="titreNbrStat"> Actifs </span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentActif >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffActif"> +{{pourcentActif|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffActif"> {{pourcentActif|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="nbLastActif">{{sejourEncourHaveAttachLast|length}}</span> actifs) </span></span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails2">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span id="totsejactifPay">{{sejourEncourHaveAttachPay|length}}</span><span class="titreNbrStat"> Payants </span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentActifPay >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffActifPay"> +{{pourcentActifPay|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffActifPay"> {{pourcentActifPay|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="nbLastActifPay">{{sejourEncourHaveAttachPayLast|length}}</span> payants) </span></span>
+                                        </h2> 
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span id="totsejactiffree">{{sejourEncourHaveAttachFree|length}}</span><span class="titreNbrStat"> Gratuits </span>
+                                                   <br><b class="detailsGratuit" id="totsejactiffreeEF"> EF({{sejourEncourHaveAttachFree_EF|length}})</b><br>
+                                           <b class="detailsGratuit" id="totsejactiffreePF"> PF({{sejourEncourHaveAttachFree_PF|length}})</b><br>
+                                            <span class="detailsCompar">
+                                                {%if pourcentActifFree >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffActifFree"> +{{pourcentActifFree|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffActifFree"> {{pourcentActifFree|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                
+                                                <span class="SpanDetailsPourcent"> (<span id="nbLastActifFree">{{sejourEncourHaveAttachFreeLast|length}}</span> gratuits) </span></span>
+                                        </h2>
+                                    </div>
+                                </div>
+                                <h2 class="titreNbrStat titreNbrStat2">
+                                    <span id="EnfSej">{{EnfantDeclare|round(2,'ceil')}}</span><span class="titreNbrStat"> enfants / séjours</span>
+                                    <span class="detailsCompar">
+                                        {%if pourcentEnfant >= 0 %}    
+                                            <span class="SpanPorcent SpanPorcentPos" id="prcntDiffEnfSej"> +{{pourcentEnfant|round(2,'ceil')}}% </span>
+                                        {%else%}
+                                            <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffEnfSej"> {{pourcentEnfant|round(2,'ceil')}}% </span>
+                                        {%endif%}
+                                        <span class="SpanDetailsPourcent"> (<span id="EnfSejLast">{{EnfantDeclareLast|round(2,'ceil')}}</span> enfants) </span></span>
+                                </h2>
+                            </div>
+                        </div>
+                        <div class="row no-margin ContenuDetailsDash ContentTodayDash SousContentTodayDash" >
+                            <div class="col-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 col-sm-4 col-xl-4 no-padding divnbrStat ">
+                                <div class="divExportStat ">
+                                    <a class="lienFactPdf" href="{{path('ExportUsersxlsx')}}" target="_blank">
+                                        <i class="fa fa-file-excel-o iconeExportData" aria-hidden="true" title="exportet sous forme xl" ></i>
+                                    </a>
+                                    <a class="lienFactPdf" href="{{path('PageGraphe',{'type': 'Comptes_Parents'}) }}" target="_blank">
+                                        <i class="fa fa-line-chart iconeExportData" aria-hidden="true" title="Afficher sous forme de graphe"></i>
+                                    </a>
+                                </div>
+                                <h2 class="titleNbrStatinit"> Comptes parents ( <span id="tauxCptPar" class="spanTaux spanTauxCptPar">{{tauxCmpt|round(2,'ceil')}}</span> % )</h2>
+                                <h2 class="titreNbrStat titreNbrStat2">
+                                    <span id="creatParnt">{{usercreate|length}}</span><span class="titreNbrStat"> Créés</span>
+                                    <span class="detailsCompar">
+                                        {%if pourcentuserCreate >= 0 %}    
+                                            <span class="SpanPorcent SpanPorcentPos" id="prcntDiffUserCreer"> +{{pourcentuserCreate|round(2,'ceil')}}% </span>
+                                        {%else%}
+                                            <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffUserCreer"> {{pourcentuserCreate|round(2,'ceil')}}% </span>
+                                        {%endif%}
+                                        <span class="SpanDetailsPourcent"> (<span id="creatParntLast">{{usercreateLast|length}}</span> créés) </span></span>
+                                </h2>
+                                <h2 class="titreNbrStat titreNbrStat2">
+                                    <span id="Actifparent">{{userActive|length}}</span><span class="titreNbrStat"> Actifs</span>
+                                    <span class="detailsCompar">
+                                        {%if pourcentuserActive >= 0 %}    
+                                            <span class="SpanPorcent SpanPorcentPos" id="prcntDiffUserActif"> +{{pourcentuserActive|round(2,'ceil')}}% </span>
+                                        {%else%}
+                                            <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffUserActif"> {{pourcentuserActive|round(2,'ceil')}}% </span>
+                                        {%endif%}
+                                        <span class="SpanDetailsPourcent"> (<span id="ActifparentLast">{{userActiveLast|length}}</span> actifs) </span></span>
+                                </h2>
+                                <div class="row no-margin divDetails">
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails1">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat5">
+                                            <span id="totcnxPrnt">{{totalCnxParent}}</span><span class="titreNbrStat"> Connexions </span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentuserCnx >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffUserCnx"> +{{pourcentuserCnx|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffUserCnx"> {{pourcentuserCnx|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="totcnxPrntLast">{{totalCnxParentLast}}</span> connexions) </span></span>
+                                        </h2>
+                                    </div>
+                                    <div class="col-6 col-lg-6 col-md-6 col-sm-6 col-xs-6 col-sm-6 col-xl-6 no-padding titreNbrStat titreNbrStat2 divsousdetails disousdetails2">
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span id="totcnxPrntPay">{{findSejourEncourPayantParentPaye}}</span><span class="titreNbrStat"> Payante </span>
+                                            <span class="detailsCompar">
+                                                {%if pourcentuserCnxPay >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffUserCnxPay"> +{{pourcentuserCnxPay|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffUserCnxPay"> {{pourcentuserCnxPay|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="totcnxPrntPayLast">{{findSejourEncourPayantParentPayeLast}}</span> payantes) </span></span>
+                                        </h2> 
+                                        <h2 class="titreNbrStat titreNbrStat2 titreNbrStat6">
+                                            <span id="totcnxPrntfree">{{findSejourEncourFreeParent}}</span><span class="titreNbrStat"> Gratuite </span>
+                                           
+                                               <br><b class="detailsGratuit" id="totcnxPrntfreeEF"> EF({{findSejourEncourFreeParent_EF}})</b><br>
+                                           <b class="detailsGratuit" id="totcnxPrntfreePF"> PF({{findSejourEncourFreeParent_PF}})</b><br>
+                                            <span class="detailsCompar">
+                                                {%if pourcentuserCnxFree >= 0 %}    
+                                                    <span class="SpanPorcent SpanPorcentPos" id="prcntDiffUserCnxFree"> +{{pourcentuserCnxFree|round(2,'ceil')}}% </span>
+                                                {%else%}
+                                                    <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffUserCnxFree"> {{pourcentuserCnxFree|round(2,'ceil')}}% </span>
+                                                {%endif%}
+                                                <span class="SpanDetailsPourcent"> (<span id="totcnxPrntfreeLast">{{findSejourEncourFreeParentLast}}</span> gratuites) </span></span>
+                                        </h2>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-4 col-lg-4 col-md-4 col-sm-4 col-xs-4 col-sm-4 col-xl-4 no-padding divnbrStat ">
+                                <div class="divExportStat ">
+                                    <a class="lienFactPdf" href="{{path('ExportCommandexlsx')}}" target="_blank">
+                                        <i class="fa fa-file-excel-o iconeExportData" aria-hidden="true" title="exportet sous forme xl" ></i>
+                                    </a>
+                                    <a class="lienFactPdf" href="{{path('PageGraphe',{'type': 'Commandes'}) }}" target="_blank">
+                                        <i class="fa fa-line-chart iconeExportData" aria-hidden="true" title="Afficher sous forme de graphe"></i>
+                                    </a>
+                                </div>
+                                <h2 class="titleNbrStatinit"> Commandes ( <span id="tauxCmd" class="spanTaux spanTauxCmd">{{tauCmd|round(2,'ceil')}}</span> % )</h2>
+                                <h2 class="titreNbrStat titreNbrStat2">
+                                    <span id="totCmd">{{ nbrDesCommande }}</span><span class="titreNbrStat"> Commandes</span>
+                                    <span class="detailsCompar">
+                                        {%if pourcentNbrCmd >= 0 %}    
+                                            <span class="SpanPorcent SpanPorcentPos" id="prcntDiffNbrCmd"> +{{pourcentNbrCmd|round(2,'ceil')}}% </span>
+                                        {%else%}
+                                            <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffNbrCmd"> {{pourcentNbrCmd|round(2,'ceil')}}% </span>
+                                        {%endif%}
+                                        <span class="SpanDetailsPourcent"> (<span id="totCmdLast">{{nbrDesCommandeLast}}</span> commandes) </span></span>
+                                </h2>
+                                <h2 class="titreNbrStat titreNbrStat2">
+                                    <span id="nbrCmdSej">{{ nbrCmdParSejour|round(2,'ceil') }}</span><span class="titreNbrStat"> Commandes moyenne / séjour </span>
+                                    <span class="detailsCompar">
+                                        {%if pourcentNbrCmdSej|round(2,'ceil') >= 0 %}    
+                                            <span class="SpanPorcent SpanPorcentPos" id="prcntDiffNbrCmdSej"> +{{pourcentNbrCmdSej|round(2,'ceil')}}% </span>
+                                        {%else%}
+                                            <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffNbrCmdSej"> {{pourcentNbrCmdSej|round(2,'ceil')}}% </span>
+                                        {%endif%}
+                                        <span class="SpanDetailsPourcent" > (<span id="nbrCmdSejLast">{{ nbrCmdParSejourLast|round(2,'ceil') }}</span> commandes / séjour) </span></span>
+                                </h2>
+                                <h2 class="titreNbrStat titreNbrStat2">
+                                    <span id="nbrProd">{{ nbrDesProduit }}</span><span class="titreNbrStat"> Produits </span>
+                                    <span class="detailsCompar">
+                                        {%if pourcentNbrProd|round(2,'ceil') >= 0 %}    
+                                            <span class="SpanPorcent SpanPorcentPos" id="prcntDiffNbrProd"> +{{pourcentNbrProd|round(2,'ceil')}}% </span>
+                                        {%else%}
+                                            <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffNbrProd"> {{pourcentNbrProd|round(2,'ceil')}}% </span>
+                                        {%endif%}
+                                        <span class="SpanDetailsPourcent" > (<span id="nbrProdLast">{{ nbrDesProduitLast}}</span> produits) </span></span>
+                                </h2>
+                                <h2 class="titreNbrStat titreNbrStat2">
+                                    <span id="nbrProdCmd">{{ nbrProduitPartCommande|round(2,'ceil') }}</span><span class="titreNbrStat"> Produits / commande </span>
+                                    <span class="detailsCompar">
+                                        {%if pourcentProdCmd >= 0 %}    
+                                            <span class="SpanPorcent SpanPorcentPos" id="prcntDiffNbrProdCmd"> +{{pourcentProdCmd|round(2,'ceil')}}% </span>
+                                        {%else%}
+                                            <span class="SpanPorcent SpanPorcentNeg" id="prcntDiffNbrProdCmd"> {{pourcentProdCmd|round(2,'ceil')}}% </span>
+                                        {%endif%}
+                                        <span class="SpanDetailsPourcent"> (<span id="nbrProdCmdLast">{{ nbrProduitPartCommandeLast|round(2,'ceil') }}</span> produits / séjours) </span></span>
+                                </h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{'/Plugins/js/c3.js'}}"></script>
+    <script src="{{'/Plugins/js/d3.v3.min.js'}}"></script>
+    <script src="{{'/Plugins/js/jquery-us.js'}}"></script>
+    <script src="{{ '/Plugins/js/moment.js' }}"></script>
+    <script src="{{ '/Plugins/js/jquery.daterangepicker.min.js' }}"></script>
+    <script>
+        {# Autocomplete Etab   #}
+            function changerString(str) {
+                var accent = [
+                    /[\300-\306]/g, /[\340-\346]/g, // A, a
+                    /[\310-\313]/g, /[\350-\353]/g, // E, e
+                    /[\314-\317]/g, /[\354-\357]/g, // I, i
+                    /[\322-\330]/g, /[\362-\370]/g, // O, o
+                    /[\331-\334]/g, /[\371-\374]/g, // U, u
+                    /[\321]/g, /[\361]/g, // N, n
+                    /[\307]/g, /[\347]/g, // C, c
+                ];
+                var noaccent = ['A', 'a', 'E', 'e', 'I', 'i', 'O', 'o', 'U', 'u', 'N', 'n', 'C', 'c'];
+                for (var i = 0; i < accent.length; i++) {
+                    str = str.replace(accent[i], noaccent[i]);
+                }
+                return str;
+            }
+            $('#inputSearchEtab').on('change keydown input paste', function () {
+                $('#divsearchEtab').addClass('show');
+                $('#dropEtab').addClass('show');
+                var mot = ($(this).val()).toUpperCase();
+                mot = changerString(mot);
+                console.log(mot);
+                $('#dropEtab').find('.liEtab').each(function () {
+                    var val = ($(this).attr('data-input')).toUpperCase();
+                    val = changerString(val);
+                    if (val.includes(mot)) {
+                        $(this).css('display', 'block');
+                    } else {
+                        $(this).css('display', 'none');
+                    }
+                });
+            });
+        {#  choix etab  #}
+            function choosePart(id, nom) {
+                $('#inputSearchEtab').val(nom);
+                $('#idpart').val(id);
+                $('#part1').val(id);
+                $('#part2').val(id);
+                $('#part3').val(id);
+                $('#selectType').val('PARTENAIRES/VOYAGISTES');
+                $('#valfiltretype').val('');
+                changeFiltre();
+            }
+        {# Calendrier du filtre   #}
+            $('.contenuCal').dateRangePicker({
+                singleMonth: true,
+                language: 'fr',
+                container: '.contenuCal',
+                alwaysOpen: true,
+                opens: 'center',
+                getValue: function () {
+                    if ($('#date-debut').val() && $('#date-fin').val())
+                        return $('#date-debut').val() + $('#date-fin').val();
+                    else
+                        return '';
+                },
+                setValue: function (s, s1, s2) {
+                    $('#dateDebut').val(s1);
+                    $('#dateFin').val(s2);
+                    $('#datedebut1').val(s1);
+                    $('#datefin1').val(s2);
+                    $('#datedebut2').val(s1);
+                    $('#datefin2').val(s2);
+                    $('#datedebut3').val(s1);
+                    $('#datefin3').val(s2);
+                    $('#inputState').val('Du ' + s1 + ' au ' + s2);
+                    activateValidBtn(s1, s2);
+                }
+            });
+            function changeFiltre() {
+                $('#loaderAcc').css('display', 'block');
+                var id = $('#idpart').val();
+                var datedebut = $('#dateDebut').val();
+                var datefin = $('#dateFin').val();
+                var typePart = $('#valfiltretype').val();
+                var typeduree = $('#valfiltreduree').val();
+                var typecompar = $('#valfiltrecompar').val();
+                data = {
+                    "idpart": id,
+                    "datedebut": datedebut,
+                    "datefin": datefin,
+                    "typePart": typePart,
+                    "typeduree": typeduree,
+                    "typecompar": typecompar
+                };
+                $.ajax({
+                    type: "POST",
+                    url: '{{ path('DashFiltresJson') }}',
+                    data: data,
+                    success: function (data) {
+                        if (data['EnfantDeclare'] !== null && data['EnfantDeclare'] !== 0) {
+                            var totenf = data['EnfantDeclare'];
+                        } else {
+                            var totenf = 0;
+                        }
+                        $('#EnfSej').text(parseFloat(totenf).toFixed(2));
+                        $('#tauxSej').text((parseFloat(data['tauxSej']).toFixed(2)));
+                        $('#tauxCmd').text((parseFloat(data['tauCmd']).toFixed(2)));
+                        $('#tauxCptPar').text((parseFloat(data['TauxCmpt']).toFixed(2)));
+                        $('#tauxCA').text((parseFloat(data['tauxCa']).toFixed(2)));
+                        $('#totsejencourPay').text(data['sejourEncourPayent']);
+                        if (data['pourcentEncourPay'] >= 0) {
+                            $('#prcntDiffCreerPay').addClass('SpanPorcentPos');
+                            $('#prcntDiffCreerPay').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffCreerPay').text('+' + (parseFloat(data['pourcentEncourPay']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffCreerPay').addClass('SpanPorcentNeg');
+                            $('#prcntDiffCreerPay').removeClass('SpanPorcentPos');
+                            $('#prcntDiffCreerPay').text((parseFloat(data['pourcentEncourPay']).toFixed(2)) + '%');
+                        }
+                        $('#nbLastcreerpay').text(data['sejourEncourPayentLast']);
+                        $('#SpanDetailsPourcent').text(data['sejourCreesLast'].length);
+                        if (data['pourcentActifPay'] >= 0) {
+                            $('#prcntDiffActifPay').addClass('SpanPorcentPos');
+                            $('#prcntDiffActifPay').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffActifPay').text('+' + (parseFloat(data['pourcentActifPay']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffActifPay').addClass('SpanPorcentNeg');
+                            $('#prcntDiffActifPay').removeClass('SpanPorcentPos');
+                            $('#prcntDiffActifPay').text((parseFloat(data['pourcentActifPay']).toFixed(2)) + '%');
+                        }
+                        $("#nbLastActifPay").text(data['sejourEncourHaveAttachPayLast'].length);
+                        $('#totsejactiffree').text(data['sejourEncourHaveAttachFree'].length);
+                         $('#totsejactiffreeEF').text('EF ('+data['sejourEncourHaveAttachFree_EF'].length+')');
+                          $('#totsejactiffreePF').text('PF ('+data['sejourEncourHaveAttachFree_PF'].length+')');
+                        if (data['pourcentActifFree'] >= 0) {
+                            $('#prcntDiffActifFree').addClass('SpanPorcentPos');
+                            $('#prcntDiffActifFree').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffActifFree').text('+' + (parseFloat(data['pourcentActifFree']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffActifFree').addClass('SpanPorcentNeg');
+                            $('#prcntDiffActifFree').removeClass('SpanPorcentPos');
+                            $('#prcntDiffActifFree').text((parseFloat(data['pourcentActifFree']).toFixed(2)) + '%');
+                        }
+                        $('#nbLastActifFree').text(data['sejourEncourHaveAttachFreeLast'].length);
+                        $('#totsejencourfree').text(data['sejourEncourFree']);
+                         $('#totsejencourfreeEF').text('EF ('+data['sejourEncourFree_EF']+')');
+                          $('#totsejencourfreePF').text('PF ('+data['sejourEncourFree_PF']+')');
+                        $('#nbLastcreerfree').text(data['sejourEncourFreeLast']);
+                        if (data['pourcentEncourFree'] >= 0) {
+                            $('#prcntDiffCreerFree').addClass('SpanPorcentPos');
+                            $('#prcntDiffCreerFree').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffCreerFree').text('+' + (parseFloat(data['pourcentEncourFree']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffCreerFree').addClass('SpanPorcentNeg');
+                            $('#prcntDiffCreerFree').removeClass('SpanPorcentPos');
+                            $('#prcntDiffCreerFree').text((parseFloat(data['pourcentEncourFree']).toFixed(2)) + '%');
+                        }
+                        $('#EnfSejLast').text(parseFloat(data['EnfantDeclareLast']).toFixed(2));
+                        if (data['pourcentEnfant'] >= 0) {
+                            $('#prcntDiffEnfSej').addClass('SpanPorcentPos');
+                            $('#prcntDiffEnfSej').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffEnfSej').text('+' + (parseFloat(data['pourcentEnfant']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffEnfSej').addClass('SpanPorcentNeg');
+                            $('#prcntDiffEnfSej').removeClass('SpanPorcentPos');
+                            $('#prcntDiffEnfSej').text((parseFloat(data['pourcentEnfant']).toFixed(2)) + '%');
+                        }
+                        $('#SejCrees').text(data['sejourCrees'].length);
+                        if (data['pourcentCreer'] >= 0) {
+                            $('#prcntDiffCreer').addClass('SpanPorcentPos');
+                            $('#prcntDiffCreer').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffCreer').text('+' + (parseFloat(data['pourcentCreer']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffCreer').addClass('SpanPorcentNeg');
+                            $('#prcntDiffCreer').removeClass('SpanPorcentPos');
+                            $('#prcntDiffCreer').text((parseFloat(data['pourcentCreer']).toFixed(2)) + '%');
+                        }
+                        $('#nbLastcreer').text(data['sejourCreesLast'].length);
+                        $('#SejActif').text(data['sejourEncourHaveAttach'].length);
+                        if (data['pourcentActif'] >= 0) {
+                            $('#prcntDiffActif').addClass('SpanPorcentPos');
+                            $('#prcntDiffActif').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffActif').text('+' + (parseFloat(data['pourcentActif']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffActif').addClass('SpanPorcentNeg');
+                            $('#prcntDiffActif').removeClass('SpanPorcentPos');
+                            $('#prcntDiffActif').text((parseFloat(data['pourcentActif']).toFixed(2)) + '%');
+                        }
+                        $('#nbLastActif').text(data['sejourEncourHaveAttachLast'].length);
+                        $('#totCmd').text(data['nbrDesCommande']);
+                        if (data['pourcentNbrCmd'] >= 0) {
+                            $('#prcntDiffNbrCmd').addClass('SpanPorcentPos');
+                            $('#prcntDiffNbrCmd').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrCmd').text('+' + (parseFloat(data['pourcentNbrCmd']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffNbrCmd').addClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrCmd').removeClass('SpanPorcentPos');
+                            $('#prcntDiffNbrCmd').text((parseFloat(data['pourcentNbrCmd']).toFixed(2)) + '%');
+                        }
+                        $('#totCmdLast').text(data['nbrDesCommandeLast']);
+                        $('#nbrCmdSej').text(parseFloat(data['nbrCmdParSejour']).toFixed(2));
+                        if (data['pourcentNbrCmdSej'] >= 0) {
+                            $('#prcntDiffNbrCmdSej').addClass('SpanPorcentPos');
+                            $('#prcntDiffNbrCmdSej').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrCmdSej').text('+' + (parseFloat(data['pourcentNbrCmdSej']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffNbrCmdSej').addClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrCmdSej').removeClass('SpanPorcentPos');
+                            $('#prcntDiffNbrCmdSej').text((parseFloat(data['pourcentNbrCmdSej']).toFixed(2)) + '%');
+                        }
+                        $('#nbrCmdSejLast').text(parseFloat(data['nbrCmdParSejourLast']).toFixed(2));
+                        $('#nbrProdCmd').text(parseFloat(data['nbrProduitPartCommande']).toFixed(2));
+                        if (data['pourcentProdCmd'] >= 0) {
+                            $('#prcntDiffNbrProdCmd').addClass('SpanPorcentPos');
+                            $('#prcntDiffNbrProdCmd').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrProdCmd').text('+' + (parseFloat(data['pourcentProdCmd']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffNbrProdCmd').addClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrProdCmd').removeClass('SpanPorcentPos');
+                            $('#prcntDiffNbrProdCmd').text((parseFloat(data['pourcentProdCmd']).toFixed(2)) + '%');
+                        }
+                        
+                        $('#nbrProd').text(data['nbrDesProduit']);
+                        $('#nbrProdLast').text(data['nbrDesProduitLast']);
+                        if (data['pourcentNbrProd'] >= 0) {
+                            $('#prcntDiffNbrProd').addClass('SpanPorcentPos');
+                            $('#prcntDiffNbrProd').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrProd').text('+' + (parseFloat(data['pourcentNbrProd']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffNbrProd').addClass('SpanPorcentNeg');
+                            $('#prcntDiffNbrProd').removeClass('SpanPorcentPos');
+                            $('#prcntDiffNbrProd').text((parseFloat(data['pourcentNbrProd']).toFixed(2)) + '%');
+                        }
+                        $('#nbrProdCmdLast').text(parseFloat(data['nbrProduitPartCommandeLast']).toFixed(2));
+                        $('#creatParnt').text(data['usercreate'].length);
+                        console.log(data['usercreate'].length);
+                        if (data['pourcentuserCreate'] >= 0) {
+                            $('#prcntDiffUserCreer').addClass('SpanPorcentPos');
+                            $('#prcntDiffUserCreer').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCreer').text('+' + (parseFloat(data['pourcentuserCreate']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffUserCreer').addClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCreer').removeClass('SpanPorcentPos');
+                            $('#prcntDiffUserCreer').text((parseFloat(data['pourcentuserCreate']).toFixed(2)) + '%');
+                        }
+                        $('#creatParntLast').text(data['usercreateLast'].length);
+                        console.log(data['usercreateLast'].length);
+                        $('#Actifparent').text(data['userActive'].length);
+                        $('#ActifparentLast').text(data['userActiveLast'].length);
+                        if (data['pourcentuserActive'] >= 0) {
+                            $('#prcntDiffUserActif').addClass('SpanPorcentPos');
+                            $('#prcntDiffUserActif').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffUserActif').text('+' + (parseFloat(data['pourcentuserActive']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffUserActif').addClass('SpanPorcentNeg');
+                            $('#prcntDiffUserActif').removeClass('SpanPorcentPos');
+                            $('#prcntDiffUserActif').text((parseFloat(data['pourcentuserActive']).toFixed(2)) + '%');
+                        }
+                        $('#totsejactifPay').text(data['sejourEncourHaveAttachPay'].length);
+                        $('#totcnxPrntLast').text(data['totalCnxParentLast']);
+                        if (data['pourcentActifPay'] >= 0) {
+                            $('#prcntDiffActifPay').addClass('SpanPorcentPos');
+                            $('#prcntDiffActifPay').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffActifPay').text('+' + (parseFloat(data['pourcentActifPay']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffActifPay').addClass('SpanPorcentNeg');
+                            $('#prcntDiffActifPay').removeClass('SpanPorcentPos');
+                            $('#prcntDiffActifPay').text((parseFloat(data['pourcentActifPay']).toFixed(2)) + '%');
+                        }
+                        $('#totcnxPrnt').text(data['totalCnxParent']);
+                        $('#totcnxPrntLast').text(data['totalCnxParentLast']);
+                        if (data['pourcentuserCnx'] >= 0) {
+                            $('#prcntDiffUserCnx').addClass('SpanPorcentPos');
+                            $('#prcntDiffUserCnx').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCnx').text('+' + (parseFloat(data['pourcentuserCnx']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffUserCnx').addClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCnx').removeClass('SpanPorcentPos');
+                            $('#prcntDiffUserCnx').text((parseFloat(data['pourcentuserCnx']).toFixed(2)) + '%');
+                        }
+                        $('#totcnxPrntPay').text(data['findSejourEncourPayantParentPaye']);
+                        $('#totcnxPrntPayLast').text(data['findSejourEncourPayantParentPayeLast']);
+                        if (data['pourcentuserCnxPay'] >= 0) {
+                            $('#prcntDiffUserCnxPay').addClass('SpanPorcentPos');
+                            $('#prcntDiffUserCnxPay').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCnxPay').text('+' + (parseFloat(data['pourcentuserCnxPay']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffUserCnxPay').addClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCnxPay').removeClass('SpanPorcentPos');
+                            $('#prcntDiffUserCnxPay').text((parseFloat(data['pourcentuserCnxPay']).toFixed(2)) + '%');
+                        }
+                        $('#totcnxPrntfree').text(data['findSejourEncourFreeParent']);
+                         $('#totcnxPrntfreeEF').text('EF ('+data['findSejourEncourFreeParent_EF']+')');
+                           $('#totcnxPrntfreePF').text('PF ('+data['findSejourEncourFreeParent_PF']+')');
+                        $('#totcnxPrntfreeLast').text(data['findSejourEncourFreeParentLast']);
+                        if (data['pourcentuserCnxFree'] >= 0) {
+                            $('#prcntDiffUserCnxFree').addClass('SpanPorcentPos');
+                            $('#prcntDiffUserCnxFree').removeClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCnxFree').text('+' + (parseFloat(data['pourcentuserCnxFree']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntDiffUserCnxFree').addClass('SpanPorcentNeg');
+                            $('#prcntDiffUserCnxFree').removeClass('SpanPorcentPos');
+                            $('#prcntDiffUserCnxFree').text((parseFloat(data['pourcentuserCnxFree']).toFixed(2)) + '%');
+                        }
+                        $('#caCnx').text(parseFloat(data['caConnexions']['cacnxtotal']).toFixed(2) + '€');
+                        $('#caCnxLast').text(parseFloat(data['caConnexionsLast']['cacnxtotal']).toFixed(2));
+                        if (data['pourcentCaCnx'] >= 0) {
+                            $('#prcntCaCnx').addClass('SpanPorcentPos');
+                            $('#prcntCaCnx').removeClass('SpanPorcentNeg');
+                            $('#prcntCaCnx').text('+' + (parseFloat(data['pourcentCaCnx']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaCnx').addClass('SpanPorcentNeg');
+                            $('#prcntCaCnx').removeClass('SpanPorcentPos');
+                            $('#prcntCaCnx').text((parseFloat(data['pourcentCaCnx']).toFixed(2)) + '%');
+                        }
+                        $('#caCnxPay').text(parseFloat(data['caConnexions']['cacnxPay']).toFixed(2) + '€');
+                        $('#caCnxPayLast').text(parseFloat(data['caConnexionsLast']['cacnxPay']).toFixed(2));
+                        if (data['pourcentCaCnxPay'] >= 0) {
+                            $('#prcntCaCnxPay').addClass('SpanPorcentPos');
+                            $('#prcntCaCnxPay').removeClass('SpanPorcentNeg');
+                            $('#prcntCaCnxPay').text('+' + (parseFloat(data['pourcentCaCnxPay']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaCnxPay').addClass('SpanPorcentNeg');
+                            $('#prcntCaCnxPay').removeClass('SpanPorcentPos');
+                            $('#prcntCaCnxPay').text((parseFloat(data['pourcentCaCnxPay']).toFixed(2)) + '%');
+                        }
+                        $('#caCnxFree').text(parseFloat(data['caConnexions']['cacnxfree']).toFixed(2) + '€');
+                        $('#caCnxFreeLast').text(parseFloat(data['caConnexionsLast']['cacnxfree']).toFixed(2));
+                        if (data['pourcentCaCnxFree'] >= 0) {
+                            $('#prcntCaCnxFree').addClass('SpanPorcentPos');
+                            $('#prcntCaCnxFree').removeClass('SpanPorcentNeg');
+                            $('#prcntCaCnxFree').text('+' + (parseFloat(data['pourcentCaCnxFree']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaCnxFree').addClass('SpanPorcentNeg');
+                            $('#prcntCaCnxFree').removeClass('SpanPorcentPos');
+                            $('#prcntCaCnxFree').text((parseFloat(data['pourcentCaCnxFree']).toFixed(2)) + '%');
+                        }
+                        $('#caCnxFree').text(parseFloat(data['caConnexions']['cacnxfree']).toFixed(2) + '€');
+                        $('#caCnxFreeLast').text(parseFloat(data['caConnexionsLast']['cacnxfree']).toFixed(2));
+                        if (data['pourcentCaCnxFree'] >= 0) {
+                            $('#prcntCaCnxFree').addClass('SpanPorcentPos');
+                            $('#prcntCaCnxFree').removeClass('SpanPorcentNeg');
+                            $('#prcntCaCnxFree').text('+' + (parseFloat(data['pourcentCaCnxFree']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaCnxFree').addClass('SpanPorcentNeg');
+                            $('#prcntCaCnxFree').removeClass('SpanPorcentPos');
+                            $('#prcntCaCnxFree').text((parseFloat(data['pourcentCaCnxFree']).toFixed(2)) + '%');
+                        }
+                        $('#cdProd').text(parseFloat(data['caProduits']).toFixed(2) + '€');
+                        $('#cdProdLast').text(parseFloat(data['caProduitsLast']).toFixed(2));
+                        if (data['pourcentCaProd'] >= 0) {
+                            $('#prcntCaProd').addClass('SpanPorcentPos');
+                            $('#prcntCaProd').removeClass('SpanPorcentNeg');
+                            $('#prcntCaProd').text('+' + (parseFloat(data['pourcentCaProd']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaProd').addClass('SpanPorcentNeg');
+                            $('#prcntCaProd').removeClass('SpanPorcentPos');
+                            $('#prcntCaProd').text((parseFloat(data['pourcentCaProd']).toFixed(2)) + '%');
+                        }
+                        $('#caPanieMoy').text(parseFloat(data['PanierMoyen']).toFixed(2) + '€');
+                        $('#caPanieMoyLast').text(parseFloat(data['PanierMoyenLast']).toFixed(2));
+                        if (data['pourcentCaPan'] >= 0) {
+                            $('#prcntCaPan').addClass('SpanPorcentPos');
+                            $('#prcntCaPan').removeClass('SpanPorcentNeg');
+                            $('#prcntCaPan').text('+' + (parseFloat(data['pourcentCaPan']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaPan').addClass('SpanPorcentNeg');
+                            $('#prcntCaPan').removeClass('SpanPorcentPos');
+                            $('#prcntCaPan').text((parseFloat(data['pourcentCaPan']).toFixed(2)) + '%');
+                        }
+                        $('#caRevTot').text('-'+parseFloat(data['reversementTotal']).toFixed(2) + '€');
+                        $('#caRevTotLast').text('-'+parseFloat(data['reversementTotalLast']).toFixed(2));
+                        if (data['pourcentCaRev'] >= 0) {
+                            $('#prcntCaRevTot').addClass('SpanPorcentPos');
+                            $('#prcntCaRevTot').removeClass('SpanPorcentNeg');
+                            $('#prcntCaRevTot').text('+' + (parseFloat(data['pourcentCaRev']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaRevTot').addClass('SpanPorcentNeg');
+                            $('#prcntCaRevTot').removeClass('SpanPorcentPos');
+                            $('#prcntCaRevTot').text((parseFloat(data['pourcentCaRev']).toFixed(2)) + '%');
+                        }
+                        $('#caRevCnx').text('-'+parseFloat(data['caConnexions']['reverCnx']).toFixed(2) + '€');
+                        $('#caRevCnxLast').text('-'+parseFloat(data['caConnexionsLast']['reverCnx']).toFixed(2));
+                        if (data['pourcentCaRev'] >= 0) {
+                            $('#prcntCaRevCnx').addClass('SpanPorcentPos');
+                            $('#prcntCaRevCnx').removeClass('SpanPorcentNeg');
+                            $('#prcntCaRevCnx').text('+' + (parseFloat(data['pourcentCaRevCnx']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaRevCnx').addClass('SpanPorcentNeg');
+                            $('#prcntCaRevCnx').removeClass('SpanPorcentPos');
+                            $('#prcntCaRevCnx').text((parseFloat(data['pourcentCaRevCnx']).toFixed(2)) + '%');
+                        }
+                        $('#caRevProd').text('-'+parseFloat(data['reversementProduit']).toFixed(2) + '€');
+                        $('#caRevProdLast').text('-'+parseFloat(data['reversementProduitLast']).toFixed(2));
+                        if (data['pourcentCaRevProd'] >= 0) {
+                            $('#prcntCaRevProd').addClass('SpanPorcentPos');
+                            $('#prcntCaRevProd').removeClass('SpanPorcentNeg');
+                            $('#prcntCaRevProd').text('+' + (parseFloat(data['pourcentCaRevProd']).toFixed(2)) + '%');
+                        } else {
+                            $('#prcntCaRevProd').addClass('SpanPorcentNeg');
+                            $('#prcntCaRevProd').removeClass('SpanPorcentPos');
+                            $('#prcntCaRevProd').text((parseFloat(data['pourcentCaRevProd']).toFixed(2)) + '%');
+                        }
+                        $('#loaderAcc').css('display', 'none');
+                    }
+                });
+            }
+            function changeFiltreType() {
+                var valeur = $('#selectType').val();
+                $('#valfiltretype').val(valeur);
+                $('#inputSearchEtab').val('');
+                $('#idpart').val('');
+                $('#part1').val('');
+                $('#part2').val('');
+                $('#part3').val('');
+                console.log(valeur);
+                changeFiltre();
+            }
+            function changeFiltreTypeCompar() {
+                var valeur = $('#selectCompare').val();
+                $('#valfiltrecompar').val(valeur);
+                console.log(valeur);
+                changeFiltre();
+            }
+            function changeFiltreDuree(valselect){
+            $('#valfiltreduree').val(valselect);
+            console.log(valselect);
+                if (valselect === "duree") {
+                    $('#btnModalDuree').click();
+                    $('#selectDuree').on('focus',function(){
+                        this.selectedIndex=-1;
+                    });
+                } else {
+                    $('#datedonnees').text(valselect);
+                    $('#dateDebut').val('');
+                    $('#dateFin').val('');
+                    changeFiltre();
+                }
+            }
+            function activateValidBtn(s1, s2) {
+                $('#validDuree').removeClass('disabledbtn');
+                s1 = s1.toString();
+                s2 = s2.toString();
+                var tabs1 = s1.split('-'); var tabs2 = s2.split('-');
+                s1 = tabs1[2] + '/' + tabs1[1] + '/' + tabs1[0];
+                s2 = tabs2[2] + '/' + tabs2[1] + '/' + tabs2[0];
+                $('#datedonnees').text('Du ' + s1 + ' au ' + s2);
+                console.log(s1);
+                console.log(s2);
+                $('#ModalDuree').modal('hide');
+                changeFiltre();
+            }
+        {#      Fonctions  Exports des XLs     #}
+            function exportXlUser() {
+                $('#loaderAcc').css('display', 'block');
+                $.ajax({
+                    type: "POST",
+                    url: ' {{path('ExportUsersxlsx')}}',
+                    success: function () {
+                        $('#loaderAcc').css('display', 'none');
+                    }
+                });
+            }
+            function exportXlSejour() {
+                $('#loaderAcc').css('display', 'block');
+                $.ajax({
+                    type: "POST",
+                    url: '{{path('ExportSejourXlsx')}} ',
+                    success: function () {
+                        $('#loaderAcc').css('display', 'none');
+                    }
+                });
+            }
+            function exportXlCmd() {
+                $('#loaderAcc').css('display', 'block');
+                $.ajax({
+                    type: "POST",
+                    url: ' {{path('ExportUsersxlsx')}}',
+                    success: function () {
+                        $('#loaderAcc').css('display', 'none');
+                    }
+                });
+            }
+            function exportXlCA() {
+                $('#loaderAcc').css('display', 'block');
+                $.ajax({
+                    type: "POST",
+                    url: '{{path('ExportSejourXlsx')}} ',
+                    success: function () {
+                        $('#loaderAcc').css('display', 'none');
+                    }
+                });
+            }
+    </script>
+{% endblock %}

@@ -1,0 +1,139 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Advanced Plugins
+{% endblock %}
+
+{% block css %}
+	<!-- Plugins css -->
+	<link href="/libs/mohithg-switchery/switchery.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/multiselect/css/multi-select.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/select2/css/select2.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/selectize/css/selectize.bootstrap3.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css" rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Advanced Form' }) }}
+{% endblock %}
+
+{% block body %}
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body col-md-6">
+					{{ form_start(form) }}
+					<div class="form-group">
+						{{ form_label(form.codeSejour) }}
+						{{ form_widget(form.codeSejour, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.codeSejour) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.dateCreationCode) }}
+						{{ form_widget(form.dateCreationCode, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.dateCreationCode) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.dateFinCode) }}
+						{{ form_widget(form.dateFinCode, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.dateFinCode) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.themSejour) }}
+						{{ form_widget(form.themSejour, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.themSejour) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.adresseSejour) }}
+						{{ form_widget(form.adresseSejour, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.adresseSejour) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.pays) }}
+						{{ form_widget(form.pays, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.pays) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.ville) }}
+						{{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.ville) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.codePostal) }}
+						{{ form_widget(form.codePostal, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.codePostal) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.dateDebutSejour) }}
+						{{ form_widget(form.dateDebutSejour, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.dateDebutSejour) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.dateFinSejour) }}
+						{{ form_widget(form.dateFinSejour, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.dateFinSejour) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.nbPhotoDiposer) }}
+						{{ form_widget(form.nbPhotoDiposer, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.nbPhotoDiposer) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.paym) }}
+						{{ form_widget(form.paym, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.paym) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.albumgratuie) }}
+						{{ form_widget(form.albumgratuie, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.albumgratuie) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.nbMessage) }}
+						{{ form_widget(form.nbMessage, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.nbMessage) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.etatAcompAlbum) }}
+						{{ form_widget(form.etatAcompAlbum) }}
+						{{ form_errors(form.etatAcompAlbum) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.etatAdresseCarte) }}
+						{{ form_widget(form.etatAdresseCarte) }}
+						{{ form_errors(form.etatAdresseCarte) }}
+					</div>
+					<div class="form-group">
+						{{ form_label(form.statut) }}
+						{{ form_widget(form.statut, {'attr': {'class': 'form-control'}}) }}
+						{{ form_errors(form.statut) }}
+					</div>
+					<button class="btn btn-primary">Save</button>
+					{{ form_end(form) }}
+
+					<a href="{{ path('sejour_index') }}">back to list</a>
+
+				</div>
+				<!-- end card-body -->
+			</div>
+			<!-- end card-->
+		</div>
+		<!-- end col -->
+	</div>
+	<!-- end row -->
+
+
+{% endblock %}
+
+{% block javascript %} <script src="/libs/selectize/js/standalone/selectize.min.js"></script>
+	 <script src="/libs/mohithg-switchery/switchery.min.js"></script>
+	 <script src="/libs/multiselect/js/jquery.multi-select.js"></script>
+	 <script src="/libs/select2/js/select2.min.js"></script>
+	 <script src="/libs/jquery-mockjax/jquery.mockjax.min.js"></script>
+	 <script src="/libs/devbridge-autocomplete/jquery.autocomplete.min.js"></script>
+	 <script src="/libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js"></script>
+	 <script src="/libs/bootstrap-maxlength/bootstrap-maxlength.min.js"></script>
+
+	<!-- Init js-->
+	 <script src="/js/pages/form-advanced.init.js"></script>
+{% endblock %}

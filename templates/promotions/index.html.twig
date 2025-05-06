@@ -1,0 +1,162 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Datatables
+{% endblock %}
+
+{% block css %}
+	<!-- third party css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<style>
+		.btn-action {
+			margin-right: 5px;
+			background-color: gray;
+		}
+	</style>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<!-- third party css end -->
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Promotions' }) }}
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="row">
+		<div class="col-12">
+			<div class="card">
+				<div class="card-body">
+					<h4 class="mt-0 header-title">Liste Promotions</h4>
+					<a href="{{ path('promotions_new') }}" class="btn btn-primary">
+						<i class="fas fa-plus"></i>Ajouter Promotion
+					</a>
+					<table id="promotions-table" class="table table-striped table-bordered table-hover">
+						<thead>
+							<tr>
+								<th>Code promo</th>
+								<th>Date début</th>
+								<th>Date fin</th>
+								<th>Pourcentage remise</th>
+								<th>Nbr d'utilisation</th>
+								<th>Type</th>
+								<th>Etat</th>
+								<th>Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for promotion in promotions %}
+								<tr>
+									<td>{{ promotion.code }}</td>
+									<td>{{ promotion.dateDebut ? promotion.dateDebut|date('Y-m-d H:i:s') : '' }}</td>
+									<td>{{ promotion.dateFin ? promotion.dateFin|date('Y-m-d H:i:s') : '' }}</td>
+									<td>{{ promotion.pourcentage }}</td>
+									<td>{{ promotion.nbreMaxParUser }}</td>
+									<td>{{ promotion.type }}</td>
+									<td>{{ promotion.etat ? 'active' : 'désactivé' }}</td>
+									<td>
+										<a href="{{ path('promotions_edit', {'id': promotion.id}) }}" class="btn btn-action btn-sm btn-success">
+											<i class="fas fa-edit"></i>
+											Modifier
+										</a>
+										{% if promotion.etat %}
+											<a href="{{ path('promotions_deactivate', {'id': promotion.id}) }}" class="btn btn-sm btn-warning">
+												<i class="fas fa-times-circle"></i>
+												Désactiver
+											</a>
+										{% else %}
+											<a href="{{ path('promotions_activate', {'id': promotion.id}) }}" class="btn btn-sm btn-primary">
+												<i class="fas fa-check-circle"></i>
+												Activer
+											</a>
+										{% endif %}
+										<button id="delete-button-{{ promotion.id }}" class="btn btn-sm btn-danger">
+											<i class="fas fa-trash"></i>
+											Supprimer
+										</button>
+										<form id="delete-form-{{ promotion.id }}" method="post" action="{{ path('promotions_delete', {'id': promotion.id}) }}" style="display: none;">
+											<input type="hidden" name="_method" value="DELETE">
+											<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ promotion.id) }}">
+										</form>
+										<script>
+											document.getElementById('delete-button-{{ promotion.id }}').addEventListener('click', function (e) {
+											e.preventDefault();
+											Swal.fire({
+											title: 'Etes-vous sûr de vouloir supprimer cette promotion ?',
+											text: "Vous ne pouvez pas annuler cette action",
+											icon: 'warning',
+											showCancelButton: true,
+											confirmButtonColor: '#3085d6',
+											cancelButtonColor: '#d33',
+											cancelButtonText: 'Non',
+											confirmButtonText: 'Oui!'
+											}).then((result) => {
+											if (result.isConfirmed) {
+											document.getElementById('delete-form-{{ promotion.id }}').submit();
+											}
+											});
+											});
+										</script>
+									</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<!-- end row -->
+
+
+{% endblock %}
+
+{% block javascript %}
+	<!-- third party js -->
+	
+	<script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	<script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+	<script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	<script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	<script src="/libs/pdfmake/build/pdfmake.min.js"></script>
+	<script src="/libs/pdfmake/build/vfs_fonts.js"></script>
+	<!-- third party js ends -->
+
+	<!-- Datatables init -->
+	<script src="/js/pages/datatables.init.js"></script>
+	
+
+
+	<script>
+		$(document).ready(function () {
+		$('#promotions-table').DataTable({
+		"paging": true,
+		"lengthChange": false,
+		"searching": true,
+		"ordering": true,
+		"info": true,
+		"autoWidth": false,
+		"pageLength": 10,
+		"language": {
+		"paginate": {
+		"previous": "Previous",
+		"next": "Next"
+		},
+		"search": "Search:"
+		}
+		});
+		});
+	</script>
+
+{% endblock %}

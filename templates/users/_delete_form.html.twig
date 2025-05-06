@@ -1,0 +1,6 @@
+<form action="{{ path('editeur_delete', {id: user.id}) }}" method="post" style="display:inline;">
+
+    <input type="hidden" name="_method" value="DELETE">
+    <input  type="hidden" name="roles" value="{{ user.roles[0] }}">
+    <button type="submit" class="btn btn-danger">Supprimer</button>
+</form>

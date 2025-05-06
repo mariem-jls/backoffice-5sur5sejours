@@ -1,0 +1,361 @@
+
+
+@media (max-width: 5000px) {
+    .Custum {
+        display: block;
+        width: 212px;
+        height: 47%;
+        padding: 0.380rem 0.75rem;
+        font-size: 15px;
+        line-height: 1.5;
+        color: #000;
+        background-color: #fff;
+        background-clip: padding-box;
+        box-shadow: none;
+        border: 1px solid #9c8d8d;
+        font-family: 'Montserrat-Bold';
+    }
+    .titre {
+        font-size: 27px;
+        margin-top: 6px;
+        font-family: 'Montserrat-Regular';
+        padding-bottom: 8px;
+    }
+    .soustitre {
+        font-size: 20px;
+        font-family: 'Montserrat-Bold';
+        border-bottom: 1px solid #000;
+        padding-bottom: 12px;
+        width: 92%;
+        text-align: left;
+    }
+    .soustitre1 {
+        font-size: 20px;
+        font-family: 'Montserrat-Bold';
+        border-bottom: 1px solid #000;
+        padding-bottom: 12px;
+        width: 92%;
+    }
+    .HEADER {
+        padding-top: 87px;
+    }
+    .HEADER2 {
+        padding-top: 73px;
+    }
+    .HEADER3 {
+        padding-top: 130px;
+    }
+    .HEADER4 {
+        padding-top: 100px;
+    }
+    .left {
+        float: left;
+    }
+    .card {
+        padding-top: 8%;
+        border: 0px;
+    }
+    .card2 {
+        padding-top: 5%;
+        border: 0px;
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-flex;
+    }
+    .bartitle {
+        font-size: 14px;
+        padding-bottom: 6px;
+        padding-top: 8px;
+        font-family: 'Montserrat-SemiBold';
+    }
+    .right {
+        float: right;
+    }
+    .Barproduit {
+        display: flex;
+        height: 32px;
+        overflow: hidden;
+        font-size: .75rem;
+        background-color: #fff;
+        border-radius: 3px;
+        transform: rotate(180deg);
+    }
+    .progress-bar {
+        background-color: #e0e0e0;
+        color: #000;
+        font-size: 12px;
+        font-family: 'Montserrat-Regular';
+        transform: rotate(180deg);
+    }
+    .fa {
+        font-size: 3rem;
+        line-height: 0;
+        color: #707073
+    }
+    .no-padding {
+        padding: 0px;
+    }
+    .no-margin {
+        margin: 0px;
+    }
+    .table {
+        width: 83%;
+        color: #212529;
+    }
+    .petitText {
+        text-align: left;
+        font-size: 12px;
+        font-family: 'Montserrat-Regular';
+        margin-top: -5px;
+    }
+    .table th,
+    .table td {
+        padding-top: 8px;
+        padding-bottom: 8px;
+        padding-left: 0px;
+        padding-right: 0px;
+        vertical-align: top;
+        border-bottom: 2px solid #B0D8DC;
+        border-top: 0px;
+        font-size: 13px;
+        font-family: 'Montserrat-Regular';
+    }
+    .table th {
+        text-align: right;
+        font-size: 17px;
+    }
+    .soustitle {
+        font-size: 17px;
+        font-weight: 700;
+    }
+    .progressTd {
+        width: 32px;
+        text-align: right;
+        padding-top: 15px;
+    }
+    .tablepanier {
+        width: 70%;
+        margin-top: 8%;
+        padding-left: 0px;
+    }
+    .tablepanier th,
+    .tablepanier td {
+        line-height: 76px;
+        padding-bottom: -36px;
+        padding-right: 36px;
+        border-top: 0px;
+        font-size: 16px;
+        font-family: 'Montserrat-SemiBold';
+        padding: 5px;
+    }
+    .right-td {
+        text-align: right;
+    }
+    .bleucolor {
+        background-color: #BCD6FF;
+    }
+    .pinkcolor {
+        background-color: #FFCBAF;
+    }
+    .vertcolor {
+        background-color: #C5E697;
+    }
+    .col-xl-1 {
+        -ms-flex: 0 0 8.333333%;
+        flex: 0 0 8.333333%;
+        max-width: 7%;
+    }
+    .divSearch1 {
+        margin-right: 62px;
+    }
+    .SearchSejour {
+        width: 291px;
+        height: 39px;
+        border-radius: 25px;
+        border: 1px solid black;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        background-color: white;
+        font-family: 'Montserrat-Regular';
+        font-size: 13px;
+        color: black;
+        background: url(/images/SearchIcon.svg) no-repeat left;
+        outline: none;
+        padding-left: 44px;
+        background-position-x: 14px;
+        background-position-y: 10px;
+    }
+    .space {
+        margin-top: 6px;
+    }
+}
+
+@media (max-width: 1830px){
+    .HEADER4 .soustitre {
+    height: 53px;
+}
+}
+
+@media (max-width: 1280px) {
+    .HEADER4 .soustitre {
+    height: auto;
+}
+    .tabsej {
+        flex: 0 0 100%;
+        max-width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+    .soustitre {
+        font-size: 15px;
+        font-family: 'Montserrat-Bold';
+        border-bottom: 1px solid #000;
+        padding-bottom: 12px;
+        width: 89%;
+    }
+    .soustitre1 {
+        font-size: 20px;
+        font-family: 'Montserrat-Bold';
+        border-bottom: 1px solid #000;
+        padding-bottom: 12px;
+        width: 97%;
+        margin-left: -48px;
+    }
+    .statsej {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-left: -44px;
+    }
+    .repart {
+        flex: 0 0 50%;
+        max-width: 48%;
+        margin-left: 37px;
+    }
+    .table {
+        width: 43.9%;
+        color: #212529;
+        margin-left: -33px;
+        margin-top: -12px;
+    }
+    .stat3 {
+        flex: 0 0 91.666667%;
+        max-width: 91.666667%;
+        margin-left: -5%;
+    }
+    .produit {
+        display: none;
+    }
+    .HEADER3 {
+        padding-top: 45px;
+        margin-top: 0px;
+    }
+    .head4 {
+        flex: 0 0 50%;
+        max-width: 50%;
+        margin-left: -48px;
+    }
+    .head5 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+    .titre {
+        font-size: 27px;
+        margin-top: 6px;
+        font-family: 'Montserrat-Regular';
+        padding-bottom: 8px;
+        margin-left: -48px;
+        letter-spacing: 0px;
+    }
+    .Custum {
+        display: block;
+        width: 212px;
+        height: 47%;
+        padding: 0.380rem 0.75rem;
+        font-size: 15px;
+        line-height: 1.5;
+        color: #000;
+        background-color: #fff;
+        background-clip: padding-box;
+        box-shadow: none;
+        border: 1px solid #9c8d8d;
+        font-family: 'Montserrat-Bold';
+        margin-left: -50px;
+    }
+    .card {
+        padding-top: 8%;
+        border: 0px;
+        margin-left: -45px;
+    }
+    .petitText {
+        font-size: 13px;
+        font-family: 'Montserrat-Regular';
+        margin-top: -5px;
+    }
+    .card2 {
+        padding-top: 5%;
+        border: 0px;
+        margin-left: auto;
+        margin-right: auto;
+        display: inline-flex;
+    }
+}
+
+@media (max-width: 700px) {
+    .soustitre {
+        font-size: 16px;
+        font-weight: 700;
+        border-bottom: 1px solid #000;
+        padding-bottom: 12px;
+        width: 94%;
+    }
+    .space {
+        margin-top: 9px;
+    }
+    .Custum {
+        display: block;
+        width: 212px;
+        height: 47%;
+        padding: 0.380rem 0.75rem;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.5;
+        color: #000;
+        background-color: #fff;
+        background-clip: padding-box;
+        box-shadow: none;
+        border: 1px solid #9c8d8d;
+        transition: border-color 0.15s ease-in-out;
+    }
+    .tablepanier {
+        width: 91%;
+        margin-top: 8%;
+        padding-left: 0px;
+    }
+    .soustitre {
+        font-size: 14px;
+        font-weight: 700;
+        border-bottom: 1px solid #000;
+        padding-bottom: 12px;
+        width: 92%;
+    }
+    .SearchSejour {
+        width: 264px;
+        height: 35px;
+        border-radius: 25px;
+        border: 1px solid black;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        box-shadow: none;
+        background-color: white;
+        font-family: Montserrat-Regular;
+        font-size: 13px;
+        color: black;
+        background: url(/images/SearchIcon.svg) no-repeat left;
+        outline: none;
+        padding-left: 44px;
+        background-position-x: 14px;
+        background-position-y: 10px;
+    }
+}

@@ -1,0 +1,740 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}Datatables
+{% endblock %}
+
+{% block css %}
+	<!-- third party css -->
+	<link href="/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-responsive-bs5/css/responsive.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-buttons-bs5/css/buttons.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	<link href="/libs/datatables.net-select-bs5/css//select.bootstrap5.min.css" rel="stylesheet" type="text/css"/>
+	{# <link type="text/css" rel="stylesheet" href="/css/DashboardAdmin.css"> #}
+	{# <link type="text/css" rel="stylesheet" href="{{'/css/acceuil.css'}}"> #}
+	{# <link type="text/css" rel="stylesheet" href="{{'/css/Comptable.css'}}"> #}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/fontawesome.min.css" integrity="sha512-B46MVOJpI6RBsdcU307elYeStF2JKT87SsHZfRSkjVi4/iZ3912zXi45X5/CBr/GbCyLx6M1GQtTKYRd52Jxgw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+	<style>
+		.btn-action {
+			margin-right: 5px;
+			background-color: gray;
+		}
+		.contentDetailsComptable {
+			margin: 0 !important;
+			padding-top: 20px;
+		}
+		.RechercheSejour {
+			flex: 0 0 80%;
+			max-width: 80%;
+			padding-top: 90px;
+		}
+		h3.titreRecherche {
+			color: white;
+			font-size: 100%;
+			font-family: 'Montserrat-Bold';
+			text-align: center;
+			border-bottom: 1px solid #41A2AA;
+			line-height: 45px;
+			background-color: rgba(65, 162, 170, 1);
+		}
+		.borderB {
+			border: none;
+			top: 99px;
+			height: auto;
+			border: 1px solid;
+			flex: 0 0 90%;
+			max-width: 90%;
+			padding: 1.5% !important;
+			width: 90% !important;
+			margin: auto auto 25px !important;
+			border: 1px solid #41A2AA;
+		}
+		button.rechBtn {
+			width: 18%;
+			height: fit-content;
+			text-align: center;
+			float: right;
+			position: relative;
+			background-color: #ffbd16;
+
+		}
+		button.circle {
+			border-color: #F09E7A;
+			background: #F09E7A;
+			color: #fff;
+			border: none;
+			font-family: 'Montserrat-SemiBold';
+			border-radius: 22px;
+			height: 35px;
+			font-size: small;
+			-webkit-transition: 0.5s;
+			-moz-transition: 0.5s;
+			-o-transition: 0.5s;
+			transition: 0.5s;
+		}
+		.circle:hover {
+			background-color: #41A2AA;
+		}
+		.iconblanc {
+			color: #fff;
+			font-size: 15px;
+			margin-right: 7px;
+		}
+		.circle:hover {
+			color: #fff;
+		}
+		/*
+		.btnExport {
+			outline: none !important;
+			font-size: 30px;
+			height: fit-content;
+			box-shadow: none;
+			background-color: none;
+			text-align: center;
+			color: white;
+		}
+		*/
+		.iconeExport {
+			font-size: 30px;
+			color: #41A2AA;
+		}
+		.divbtnExport {
+			display: flex;
+			justify-content: flex-end;
+			align-items: center; /* Ensures buttons are vertically aligned */
+			gap: 10px; /* Space between buttons */
+		}
+
+		.btnExport {
+			outline: none !important;
+			font-size: 30px;
+			height: fit-content;
+			box-shadow: none;
+			background-color: none;
+			text-align: center;
+			color: white;
+		}
+
+		.table th, .table td {
+        text-align: left;
+        font-size: 15px !important;
+        font-family: 'Montserrat-Regular';
+		}
+		.table th{
+			font-family: 'Montserrat-Bold';
+			padding-left: 5px !important;
+		}
+
+		.titlesDash{
+			font-family: 'Montserrat-Regular';
+			font-size: 27px;
+			width: 100%;
+			text-align: left;
+			margin-top: 10px;
+			height: 35px;
+		}
+		.titleFiltre{
+			font-size: 100%;
+			text-decoration: underline;
+			text-align: left;
+			font-family: 'Montserrat-Bold';
+			line-height: 25px;
+			height: 25px;
+		}
+		.contenuCal {
+			position: absolute;
+			text-align: center;
+			max-width: 80%;
+			width: 80%;
+		}
+		.inputState {
+			width: 80% !important;
+			height: 35px !important;
+			font-family: 'Montserrat-Regular';
+			font-size: 15px !important;
+			margin: 0;
+			border: 1px solid #495057 !important;
+			outline: none !important;
+			box-shadow: none !important;
+		}
+		.flex-row-reverse {
+			display: flex;
+			flex-direction: row-reverse;
+			margin-bottom: 10px;
+		}
+
+	</style>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<!-- third party css end -->
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Promotions' }) }}
+{% endblock %}
+
+{% block body %}
+	<div class="row no-margin contentDetailsComptable bg-white">
+		<div class="col-xl-10 col-lg-10 col-md-10 col-sm-10 col-xs-10  borderB no-margin RechercheSejour">
+			<div
+				style="display:flex;position: relative;bottom: 20px;right: 30px">
+				{# <a class="btn" href="{{ path(' AdminComptable') }}" style="color: white;cursor:ointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;background-color:#41A2AA">Liste des factures</a> #}
+				<a href="{{ path('AdminComptable') }}" class="btn " style="color: white;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;background-color:#41A2AA">Liste des factures</a>
+				<a href="{{ path('listeappelafacutre') }}" class="btn " style="color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Appels à facture</a>
+				{# <a class="btn" href="{{ path(' listeappelafacutre') }}" style="color: black;cursor:pointer;border: 1px solid black;margin-left: 29px;margin-top: 30px;">Appels à facture</a> #}
+			</div>
+			<h3 class="titreRecherche" style="text-align: left;padding-left: 10px;">Recherche avancée par:</h3><br>
+			<form action="{{ path('ExportAppelAFacture') }}" id="form1" method="POST">
+				<div class="form" id="infoAcc" style="display: block;">
+					<div class="row no-margin">
+						{#<div class=" col-xl-12 col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding ">#}
+						{#<h5 class="desciptionRecherche"> Information commande  </h5>#}
+						{#<div class=" col-xl-12 col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding ">#}
+						{#<hr width="100%" color="#BCD6FF">#}
+						{#</div>#}
+						{#</div>#}
+						<br>
+							<div class="col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6   divCalendrier"> <label>
+								Période
+							</label>
+							<input type="text" placeholder="Choisir une durée" autocomplete="off" id="daterange" class=" form-control ">
+							<input type="hidden" name="datedebut" id="datedebut">
+							<input type="hidden" name="datefin" id="datefin">
+							<div class="contenuCal"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 "></div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 ">
+							<label>
+								Partenaire
+							</label>
+							<input type="text" autocomplete="off" name="idPartenaire" id="idPartenaire" class="form-control">
+							<div id="listePartenaire"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 ">
+							<label>Séjour</label>
+							<input type="text" autocomplete="off" name="idSejour" id="idSejour" class=" form-control">
+							<div id="listeSejour"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6 ">
+							<label>
+								Num cmd
+							</label>
+							<input name="idCommande" class="form-control" id="idCommande" placeholder="Saisir numéro de la commande">
+							<div id="listeCommande"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6  ">
+							<label>
+								Num facture</label>
+							<input name="idFacture" class="form-control" id="idFacture" placeholder="Saisir numéro de la commande">
+							<div id="listeFacture"></div>
+						</div>
+						<div class=" col-xl-6 col-lg-6 col-md-6 col-ms-6 col-xs-6  ">
+							<label>
+								Produits</label>
+							{#<input type="text" autocomplete="off" id="activatemail"#}
+							{#class=" form-control col-lg-12 col-md-12 col-ms-12 col-xs-12 no-padding">#}
+							<select name="idProduit" class="form-control" id="idProduit">
+								<option></option>
+								{% for produit in listeTypeProduit %}
+									<option value="{{ produit.id }}">
+										{{ produit.idTypeProduit.labeletype }}
+										{{ produit.sousTitre }}</option>
+								{% endfor %}
+							</select>
+						</div>
+					</div>
+				</div>
+			</form>
+			<br>
+			<button type="button" id="filtreCmd" class="btn circle rechBtn">Rechercher</button>
+			<br><br>
+		</div>
+		<div class="noneAucun col-xl-1 col-lg-1 col-md-1 col-sm-1 col-1 no-padding FiltreContent"></div>
+		<div class="row  flex-row-reverse ">
+			<div class="col-1 col-md-1 col-ms-1 col-sm-1 col-lg-1 col-xl-1 col-xs-1 no-padding right divbtnExport">
+				<button class="btnExport" title="Exporter" type="submit" form="form1">
+					<i class="fa fa-file-excel iconeExport" aria-hidden="true"></i>
+				</button>
+				<button class="btnExport" onclick="zipFacturesFromDataTables()" title="Télécharger les factures">
+					<i class="fa fa-file-zipper iconeExport" aria-hidden="true"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	{#<button class="btn" onclick='location.href="{{ path('ListeAppelAFacutre') }}"'>Appels à facture</button>#}
+	<div class="row   bg-white">
+		{#{{ dump(ListeCmd) }}#}
+		{#{%if ListeCmd != null and ListeCmd|length != 0%}#}
+			<table id="tab" class="table table-striped table-bordered" style="width:100%"> 
+				<thead>
+					<tr>
+                        <th>Id client</th>
+                        <th>Nom client</th>
+                        <th>Num appel à facture</th>
+                        <th>Date appel à facture</th>
+                        <th>Produits</th>
+                        <th>Montant HT</th>
+                        <th>Quantité</th>
+                        {#<th>Montant TVA</th>#}
+                        <th>% reversement</th>
+                        <th>Montant de reversement</th>
+                        <th>Facture</th>
+                    </tr>
+				</thead>
+				<tbody>
+					{% for appelfact in ComandeFind %}
+                        {% if appelfact.quantiter !=0 and appelfact.idComande.idSejour.reverseventepart!=0 %}
+                            {% if dateNow!=appelfact.idComande.dateCreateCommande|date('Y-m') %}
+                                <tr data-idpartenaire="{{appelfact.idComande.idSejour.idPartenaire.id}}" data-periode="{{appelfact.idComande.dateCreateCommande|date('Y-m')}}">
+                                    <td>
+                                        {{appelfact.idComande.idSejour.idEtablisment.id}}</td>
+                                    <td>
+                                        {{appelfact.idComande.idSejour.idEtablisment.nometab}}
+                                    </td>
+                                    <td>{{tabNumFacture[appelfact.idComande.idSejour.idPartenaire.id][appelfact.idComande.dateCreateCommande|date('Y-m')]["numAppelFacture"]}}</td>
+                                    <td>
+                                        {% if  appelfact.idComande.dateCreateCommande != null %}
+                                            {{appelfact.idComande.dateCreateCommande|date('d-m-Y') }}
+                                        {% endif %}
+                                    </td>
+                                    {% set Montant=(appelfact.idProduit.idConditionnement.montantTTC()*100)/120 %}
+                                    {% if appelfact.idProduit.pourcentage is null %}
+                                        {% set  pourcentageRemise = 0 %}
+                                    {% else %}
+                                        {% set  pourcentageRemise = appelfact.idProduit.pourcentage  %}
+                                    {% endif %}
+                                    {% set MontantHT=Montant-((Montant/100)*pourcentageRemise) %}
+                                    {% set REV=MontantHT*appelfact.quantiter*(appelfact.idComande.idSejour.reverseventepart/ 100)%}
+                                    {% set pourcentageR=0 %}
+                                    {% if (MontantHT*appelfact.quantiter) !=0 %}
+                                        {% set pourcentageR=(REV/(MontantHT*appelfact.quantiter))*100 %}
+                                    {% endif %}
+                                    <td>
+                                        {{appelfact.idProduit.idConditionnement.idTypeProduit.labeletype  }}
+                                        {{ appelfact.idProduit.idConditionnement.sousTitre  }}</td>
+
+                                    <td>{{ MontantHT|number_format(2) }}€
+                                    </td>
+                                    <td>{{ appelfact.quantiter }}</td>
+                                    {% if  appelfact.idProduit.idConditionnement.idTypeProduit.labeletype =="Connexion"%}
+                                        <td>
+                                            10
+                                        </td>
+                                    {% else %}
+                                        <td>{{ appelfact.idComande.idSejour.reverseventepart|number_format }}
+                                        </td>
+                                    {% endif %}
+                                    {% if  appelfact.idProduit.idConditionnement.idTypeProduit.labeletype =="Connexion"%}
+                                        {% set RevCnx=MontantHT*0.1 %}
+                                        <td>-
+                                            {{RevCnx|number_format(2) }}€</td>
+                                    {% else %}
+                                        <td>-
+                                            {{REV|number_format(2) }}€</td>
+                                    {% endif %}
+                                    <td style="text-align: center;">
+                                        <a class="lienFactPdf" href="{{ path('generatePdfReversementPartenaireParPeriode',{'idPartenaire': appelfact.idComande.idSejour.idPartenaire.id,'periode':appelfact.idComande.dateCreateCommande|date('Y-m')}) }}" target="_blank">
+                                            <i class="fa fa-file-pdf-o iconepdf" aria-hidden="true" title="Télécharger facture en PDF"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+				</tbody>
+			</table>
+		{#{%else%}#}
+		<div class="row no-margin" style="display: none">
+			<span class="EmptyData">
+				Pas d'informations pour le moment.</span>
+		</div>
+		{#{%endif%}#}
+		{#</div>#}
+	</div>
+{% endblock %}
+
+{% block javascript %}
+	<!-- third party js -->
+
+	<script src="/libs/datatables.net/js/jquery.dataTables.min.js"></script>
+	<script src="/libs/datatables.net-bs5/js/dataTables.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-responsive/js/dataTables.responsive.min.js"></script>
+	<script src="/libs/datatables.net-responsive-bs5/js/responsive.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/dataTables.buttons.min.js"></script>
+	<script src="/libs/datatables.net-buttons-bs5/js/buttons.bootstrap5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.html5.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.flash.min.js"></script>
+	<script src="/libs/datatables.net-buttons/js/buttons.print.min.js"></script>
+	<script src="/libs/datatables.net-keytable/js/dataTables.keyTable.min.js"></script>
+	<script src="/libs/datatables.net-select/js/dataTables.select.min.js"></script>
+	<script src="/libs/pdfmake/build/pdfmake.min.js"></script>
+	<script src="/libs/pdfmake/build/vfs_fonts.js"></script>
+	{# <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> #}
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/min/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script>
+        $(function() {
+            try {
+                $("#daterange").daterangepicker();
+
+				// Event listener for apply event on Date Range Picker
+				$('#daterange').on('apply.daterangepicker', function(ev, picker) {
+					// Get the start and end dates
+					var startDate = picker.startDate.format('YYYY-MM-DD');
+					var endDate = picker.endDate.format('YYYY-MM-DD');
+
+					// Set the values of the input fields
+					$('#datedebut').val(startDate);
+					$('#datefin').val(endDate);
+				});
+            } catch (error) {
+                console.error("Error initializing Date Range Picker:", error);
+            }
+        });
+    </script>
+
+	<!-- third party js ends -->
+
+	<!-- Datatables init -->
+	<script src="/js/pages/datatables.init.js"></script>
+
+
+	<script>
+		new DataTable('#tab');
+	</script>
+	<script>
+        $('#filtreCmd').on('click',function(){
+                $('#loaderAcc').css('display', 'block');
+
+            $test=validerChamps();
+            /* console.log($test);*/
+
+            if($test){
+                    data = {
+                    "datedebut": $('#datedebut').val(),
+                    "datefin": $('#datefin').val(),
+                    "partenaire":$('#idPartenaire').val(),
+                    "sejour":$('#idSejour').val(),
+                    "numCmd":$('#idCommande').val(),
+                    "numFacture":$('#idFacture').val(),
+                    "produit":$('#idProduit').val(),
+                };
+                console.log(data);
+                $.ajax({
+                    type: "POST",
+                    url: '/comptableReversementParPeriodeRecherchercheAvancerVersion2',
+                    data: data,
+                    success: function (result) {
+                        $('#loaderAcc').css('display', 'none');
+                        console.log('result', result);
+                        if(result.length !== 0){
+                            var contenu = "";
+                            $('.EmptyDatasearch').css('display','none');
+                            $('.dataTables_wrapper').css('display','block');
+                            /* table.destroy();*/
+                            $('#tab').find('tbody').empty();
+                            $.each(result, function (key, cmd) {
+                                /* console.log(key);
+                                console.log(result.length); */
+                                var idcmd = cmd['Idcmd'];
+                                var idclient = cmd['Idclient'];
+                                var idPartenaire = cmd['idPartenaire'];
+                                var client = cmd['Client'];
+                                var numfact = cmd['Numfacture'];
+                                var dateFact = cmd['Datefacture'];
+                                var datecmd = cmd['Datecmd'];
+                                var numcmd = cmd['Numcmd'];
+                                var qt = cmd['Quantite'];
+                                var prd = cmd['Produits'];
+                                var ttc = cmd['Montant_ttc'];
+                                var rev = cmd['Rev'];
+                                var ht = cmd['Montant_ht'];
+                                var tva = cmd['Tva'];
+                                var pourCent = cmd['pourCent'];
+                                
+
+                                if (qt === null || qt === "" || qt === 0) {
+                                qt = 0;
+                                }
+                                if (ttc === null || ttc === "" || ttc === 0) {
+                                ttc = 0;
+                                } else {
+                                ttc = ttc.toFixed(2)
+                                }
+                                if (rev === null || rev === "" || rev === 0) {
+                                rev = 0;
+                                } else {
+                                rev = rev.toFixed(2)
+                                }
+                                if (ht === null || ht === "" || ht === 0) {
+                                ht = 0;
+                                } else {
+                                ht = ht.toFixed(2)
+                                }
+                                if (pourCent === null || pourCent === "" || pourCent === 0) {
+                                pourCent = 0;
+                                } else {
+                                pourCent = pourCent;
+                                }
+                                var idPartenaire = cmd['idPart'];
+                                var periode = cmd['periode'];
+                                var url = "{{ path('generatePdfReversementPartenaireParPeriode',{'idPartenaire':'cmdid','periode':'pp'}) }}";
+                                url = url.replace('cmdid', idPartenaire);
+                                url = url.replace('pp', periode);
+                                contenu = '<tr data-idPartenaire="' + idPartenaire + '" data-periode="' + periode + '">';
+                                contenu = contenu + '<td>' + idclient + '</td> <td>' + client + '</td>';
+                                contenu = contenu + '<td>' + numfact + '</td><td>' + dateFact + '</td>';
+                                // contenu = contenu + '<td>'+numcmd+'</td><td>'+datecmd+'</td>';
+                                contenu = contenu + '<td>' + prd + '</td>';
+                                // contenu = contenu + '<td>'+ttc+'€</td><td>'+exp+'€</td>';
+                                contenu = contenu + '<td>' + ht + '€</td><td>' + qt + '</td>';
+                                contenu = contenu + '<td>' + pourCent + '</td>';
+                                contenu = contenu + '<td>' + rev + '</td><td style="text-align: center;">';
+                                contenu = contenu + '<a class="lienFactPdf" href="' + url + '" target="_blank"><i class="fa fa-file-pdf-o iconepdf" aria-hidden="true" title="Télécharger facture en PDF"></i></a>';
+                                contenu = contenu + '</td></tr>';
+                                $('#tab').find('tbody').append(contenu);
+                            });
+                            setTimeout(function(){
+                                table = $('#tab').DataTable({
+                                    language: {
+                                        "url": "//cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/French.json"
+                                    },
+                                    responsive: {
+                                        details: {
+                                            display: $.fn.dataTable.Responsive.display.modal({
+                                                header: function (row) {
+                                                    var data = row.data();
+                                                    return 'Détails pour ' + data[1];
+                                                }
+                                            }),
+                                            renderer: $.fn.dataTable.Responsive.renderer.tableAll({
+                                                tableClass: 'table'
+                                            })
+                                        }
+                                    }
+                                });
+                            },50);
+
+
+                        }
+                        else{
+                            $('.EmptyDatasearch').remove();
+                            $('.dataTables_wrapper').css('display','none');
+                            contenu = '<div class="row no-margin" >';
+                            contenu = contenu + '<span class="EmptyData EmptyDatasearch"> Pas d\'informations pour cette durée.</span> </div>';
+                            $('.dataTables_wrapper').after(contenu);
+                        }
+                        $('#loaderAcc').css('display', 'none');
+                    }
+                });
+            }
+            else{
+                    $('#loaderAcc').css('display', 'none');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Vous devez remplir au moins un champ pour effectuer la recherche !',
+
+
+                    })
+
+            }
+
+        })
+
+        function validerChamps()
+        {
+            $test=false;
+            if($('#idProduit').val()=="")
+                {$testProduit=false}else{
+                $testProduit=true;
+                }
+                 if($('#idFacture').val()=="")
+                {$testFacture=false}else{
+                $testFacture=true;
+                }
+                 if($('#idCommande').val()=="")
+                {$testCmd=false}
+                else{
+                $testCmd=true;
+                }
+
+                 if($('#idSejour').val()=="")
+                {$testSej=false}else{
+                $testSej=true;
+                }
+
+                 if($('#idPartenaire').val()=="")
+                {$testPart=false}else{
+                $testPart=true;
+                }
+
+                 if($('#datefin').val()==""||$('#datedebut').val()=="")
+                {$testPeriode=false}
+                else{
+                $testPeriode=true;
+                }
+
+
+                if($testPeriode||$testProduit||$testCmd||$testFacture||$testPart||$testSej)
+                    {
+                        $test=true;
+                    }
+                    else{$test=false;}
+
+                    return $test;
+
+
+        }
+
+
+         function ImoprtExcel(){
+
+              $('#loaderAcc').css('display', 'block');
+
+           $test=validerChamps();
+
+
+                data = {
+                "datedebut": $('#datedebut').val(),
+                "datefin": $('#datefin').val(),
+                "partenaire":$('#idPartenaire').val(),
+                "sejour":$('#idSejour').val(),
+                "numCmd":$('#idCommande').val(),
+                "numFacture":$('#idFacture').val(),
+                "produit":$('#idProduit').val(),
+                "test":$test
+            };
+            $.ajax({
+                type: "POST",
+                url: '/Admin/comptablexlsxV3',
+                data: data,
+                success: function (result) {
+			$('#loaderAcc').css('display', 'none');
+                }
+                })
+        }
+
+        function StartExport() {
+            $('#loaderAcc').css('display', 'block');
+            $.ajax({
+                type: "POST",
+                url: '{{ path('comptableAppelFactXlx') }}',
+                data: data,
+                success: function (result) {}
+            });
+        }
+
+        function zipFacturesFromDataTables() {
+            Swal.fire('', 'Merci de patienter jusqu\'à la fin de téléchargement.', 'success')
+            $('#loaderAcc').css('display', 'block');
+            // $factureParent = [];
+            $appelFacutre = [];
+            $periode = [];
+            $partenaires = [];
+            $i = 0;
+            var table = $('#tab').DataTable();
+            table.rows().every(function () {
+                $idPartenaire = this.nodes().to$().attr('data-idPartenaire');
+                console.log($idPartenaire);
+                $Periode = this.nodes().to$().attr('data-periode');
+                if ($Periode != "" && $idPartenaire != "") {
+                    $partenaires.push({'idPartenaire': $idPartenaire, 'Periode': $Periode});
+                    $i ++;
+                }
+            });
+            var myNewPartenaire = $partenaires.map(JSON.stringify).reverse() // convert to JSON string the array content, then reverse it (to check from end to begining).filter(function (item, index, arr) {
+            return arr.indexOf(item, index + 1) === -1;
+        } // check if there is any occurence of the item in whole array.reverse().map(JSON.parse) // revert it to original state
+        console.log(myNewPartenaire)
+        // console.log($appelFacutre);
+        data = {
+        "partenaire": JSON.stringify(myNewPartenaire)
+        }
+
+        $.ajax({
+            type: "POST",
+            url: '{{ path('ZipAppelFActVersion2') }}',
+            data: data,
+            success: function (result) {
+                $('#loaderAcc').css('display', 'none');
+                window.location.href = result;
+            },
+            error: function (xhr, status, errorThrown) {
+                $('#loaderAcc').css('display', 'none');
+            },
+            complete: function () {
+                $('#loaderAcc').css('display', 'none');
+            }
+        });
+
+        $(function () {
+            var available = [];
+            {% for etablissement in alletablissement %}
+                available.push({"id": {{ etablissement.getId() }}, "label":"{{ etablissement.getId() }}-{{ etablissement.getNometab() }}", "value":"{{ etablissement.getId() }}-{{ etablissement.getNometab() }}"});
+            {% endfor %}
+            $("#idPartenaire").autocomplete({
+                source: available,
+                appendTo: "#listePartenaire",
+                classes: {
+                    "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+            };
+        });
+
+        $(function () {
+            var available = [];
+            {% for sejour in listeSejour %}
+                available.push({"id": {{ sejour["id"] }}, "label":"{{ sejour["id"] }}-{{ sejour["codeSejour"] }}", "value":"{{ sejour["id"] }}-{{ sejour["codeSejour"] }}"});
+            {% endfor %}
+            $("#idSejour").autocomplete({
+                    source: available,
+                    appendTo: "#listeSejour",
+                    classes: {
+                    "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+                    }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+            };
+        });
+
+
+        $(function () {
+            var available = [];
+                {% for cmd in listeCommande %}
+                    available.push({"id": {{ cmd["id"] }}, "label":"{{ cmd["id"] }}-{{ cmd["numComande"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}", "value":"{{ cmd["id"] }}-{{ cmd["numComande"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}"});
+                {% endfor %}
+            $("#idCommande").autocomplete({
+                source: available,
+                appendTo: "#listeCommande",
+                classes: {
+                    "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+            };
+        });
+
+
+        $(function () {
+            var available = [];
+            {% for cmd in listeCommande %}
+                available.push({"id": {{ cmd["id"] }}, "label":"{{ cmd["id"] }}-{{ cmd["numfacture"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}", "value":"{{ cmd["id"] }}-{{ cmd["numfacture"] }}-{{ cmd["codeSejour"] }}-{{ cmd["libiller"] }}"});
+            {% endfor %}
+            $("#idFacture").autocomplete({
+                source: available,
+                appendTo: "#listeFacture",
+                classes: {
+                    "ui-autocomplete": "selectPratique selectListadmin scrollCookmaker left-none"
+                }
+            }).data("ui-autocomplete")._renderItem = function (ul, item) {
+                return $("<li></li>").data("ui-autocomplete-item", item).append("<div class='col-md-11 col-sm-11 col-xs-11' data-value=" + item.id + ">  <div class=' nomIngred' style='line-height: 1.42857143;!important'> <span class='nomingr' data-name='" + item.label + "' title='" + item.label + "' data-id='" + item.value + "'>" + item.label + " </span><br>   </div>").appendTo(ul);
+            };
+        });
+	</script>
+
+{% endblock %}
+				
+

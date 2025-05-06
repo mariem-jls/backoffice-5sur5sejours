@@ -1,0 +1,115 @@
+/* body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+} */
+
+#profile {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    height: 100vh;
+    background-color: #ede9e9;
+}
+
+/* .col-lg-12 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+} */
+
+.card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    overflow: hidden;
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    background-color: #4CAF50;
+    color: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.profile-image {
+    border-radius: 50%;
+    width: 80px;
+    height: 80px;
+    margin-right: 20px;
+}
+
+.nom {
+    flex-grow: 1;
+}
+
+.nom p {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.stat-image {
+    width: 20px;
+    height: 20px;
+    margin-left: 10px;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+.card-body .row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.card-body .row .left {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-body .row .right {
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.card-body .row p {
+    margin: 0;
+    font-size: 1em;
+}
+
+.icon-mail, .icon-adress, .icon-num {
+    width: 24px;
+    height: 24px;
+}
+
+.btn-success {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-top: 20px;
+}
+
+.btn-success:hover {
+    background-color: #218838;
+}

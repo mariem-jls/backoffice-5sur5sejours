@@ -1,0 +1,105 @@
+{% extends 'partials/layout-vertical.html.twig' %}
+
+{% block title %}
+	Profile
+{% endblock %}
+
+{% block topbar %}
+	{{ include('partials/topbar.html.twig', { page_title: 'Profile' }) }}
+{% endblock %}
+
+{% block body %}
+	<div class="row">
+		<div class="col-sm-8">
+			<div class="card">
+				<table class="table">
+					<tbody>
+						<tr>
+							<th>Id</th>
+							<td>{{ sejour.id }}</td>
+						</tr>
+						<tr>
+							<th>Code Sejour</th>
+							<td>{{ sejour.codeSejour }}</td>
+						</tr>
+						<tr>
+							<th>Date Creation Code</th>
+							<td>{{ sejour.dateCreationCode ? sejour.dateCreationCode|date('Y-m-d') : '' }}</td>
+						</tr>
+						<tr>
+							<th>Date Fin Code</th>
+							<td>{{ sejour.dateFinCode ? sejour.dateFinCode|date('Y-m-d') : '' }}</td>
+						</tr>
+						<tr>
+							<th>Them Sejour</th>
+							<td>{{ sejour.themSejour }}</td>
+						</tr>
+						<tr>
+							<th>Adresse Sejour</th>
+							<td>{{ sejour.adresseSejour }}</td>
+						</tr>
+						<tr>
+							<th>Pays</th>
+							<td>{{ sejour.pays }}</td>
+						</tr>
+						<tr>
+							<th>Ville</th>
+							<td>{{ sejour.ville }}</td>
+						</tr>
+						<tr>
+							<th>Code Postal</th>
+							<td>{{ sejour.codePostal }}</td>
+						</tr>
+						<tr>
+							<th>Date Debut Sejour</th>
+							<td>{{ sejour.dateDebutSejour ? sejour.dateDebutSejour|date('Y-m-d') : '' }}</td>
+						</tr>
+						<tr>
+							<th>Date Fin Sejour</th>
+							<td>{{ sejour.dateFinSejour ? sejour.dateFinSejour|date('Y-m-d') : '' }}</td>
+						</tr>
+						<tr>
+							<th>Nb Photo Diposer</th>
+							<td>{{ sejour.nbPhotoDiposer }}</td>
+						</tr>
+						<tr>
+							<th>Paym</th>
+							<td>{{ sejour.paym }}</td>
+						</tr>
+						<tr>
+							<th>Album Gratuie</th>
+							<td>{{ sejour.albumgratuie }}</td>
+						</tr>
+						<tr>
+							<th>Nb Message</th>
+							<td>{{ sejour.nbMessage }}</td>
+						</tr>
+						<tr>
+							<th>Etat Acomp Album</th>
+							<td>{{ sejour.etatAcompAlbum ? 'Yes' : 'No' }}</td>
+						</tr>
+						<tr>
+							<th>Etat Adresse Carte</th>
+							<td>{{ sejour.etatAdresseCarte ? 'Yes' : 'No' }}</td>
+						</tr>
+						<tr>
+							<th>Statut</th>
+							<td>{{ sejour.statut ? sejour.statut.name : '' }}</td>
+						</tr>
+						<!-- Add other fields as necessary -->
+					</tbody>
+				</table>
+
+				<a href="{{ path('sejour_index') }}">back to list</a>
+
+				<a href="{{ path('sejour_edit', {'id': sejour.id}) }}">edit</a>
+
+				<form method="post" action="{{ path('sejour_delete', {'id': sejour.id}) }}" style="display: inline-block;" onsubmit="return confirm('Are you sure you want to delete this item?');">
+					<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ sejour.id) }}">
+					<button class="btn btn-danger">delete</button>
+				</form>
+			</div>
+			<!--/ meta -->
+		</div>
+	</div>
+{% endblock %}
